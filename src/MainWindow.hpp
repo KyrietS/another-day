@@ -11,21 +11,39 @@ namespace minutea
 		MainWindow(const wxString& title)
 			: wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, FRAME_STYLE)
 		{
-			this->SetSize(FromDIP(120), FromDIP(50));
 			this->SetBackgroundColour(*wxWHITE);
 
 			wxImage::AddHandler(new wxPNGHandler());
 			wxBitmap iconBitmapTea(wxT("cup-tea.png"), wxBITMAP_TYPE_PNG);
 			wxBitmap iconBitmapDoor(wxT("door-open-out.png"), wxBITMAP_TYPE_PNG);
 
-			iconTea = new wxStaticBitmap(this, wxID_ANY, iconBitmapTea, FromDIP(wxPoint(5, 5)), FromDIP(wxSize(20, 20)));
-			iconDoor = new wxStaticBitmap(this, wxID_ANY, iconBitmapDoor, FromDIP(wxPoint(5, 25)), FromDIP(wxSize(20, 20)));
+			wxSizer* paddingSizer = new wxBoxSizer(wxHORIZONTAL);
+			wxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+			wxSizer* firstRowSizer = new wxBoxSizer(wxHORIZONTAL);
+			wxSizer* secondRowSizer = new wxBoxSizer(wxHORIZONTAL);
 
-			m_progressBarBreak = new wxGauge(this, wxID_ANY, 100, FromDIP(wxPoint(30, 5)), FromDIP(wxSize(85, 20)));
-			m_progressBarEnd = new wxGauge(this, wxID_ANY, 100, FromDIP(wxPoint(30, 25)), FromDIP(wxSize(85, 20)));
+			iconTea = new wxStaticBitmap(this, wxID_ANY, iconBitmapTea, wxDefaultPosition, FromDIP(wxSize(20, 20)));
+			iconDoor = new wxStaticBitmap(this, wxID_ANY, iconBitmapDoor, wxDefaultPosition, FromDIP(wxSize(20, 20)));
+
+			m_progressBarBreak = new wxGauge(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
+			m_progressBarEnd = new wxGauge(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
 			m_progressBarBreak->SetValue(50);
 			m_progressBarEnd->SetValue(50);
 
+			firstRowSizer->Add(iconTea, 0, wxALIGN_CENTER_VERTICAL | wxALL, 0);
+			firstRowSizer->Add(m_progressBarBreak, 0, wxALL, 0);
+
+			secondRowSizer->Add(iconDoor, 0, wxALIGN_CENTER_VERTICAL | wxALL, 0);
+			secondRowSizer->Add(m_progressBarEnd, 0, wxALL, 0);
+
+			mainSizer->Add(firstRowSizer, 0, wxALIGN_LEFT | wxALL, 0);
+			mainSizer->AddSpacer(FromDIP(2));
+			mainSizer->Add(secondRowSizer, 0, wxALIGN_LEFT | wxALL, 0);
+
+			paddingSizer->Add(mainSizer, 1, wxEXPAND | wxALL, FromDIP(2));
+
+			this->SetSizer(paddingSizer);
+			this->Layout();
 			this->Fit();
 
 			setDragEvents(iconTea);
