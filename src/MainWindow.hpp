@@ -1,4 +1,5 @@
 #pragma once
+#include "CustomProgressBar.hpp"
 
 constexpr auto FRAME_STYLE = wxFRAME_TOOL_WINDOW | wxSTAY_ON_TOP;
 // constexpr auto FRAME_STYLE = wxDEFAULT_FRAME_STYLE;
@@ -25,8 +26,8 @@ namespace minutea
 			iconTea = new wxStaticBitmap(this, wxID_ANY, iconBitmapTea, wxDefaultPosition, FromDIP(wxSize(20, 20)));
 			iconDoor = new wxStaticBitmap(this, wxID_ANY, iconBitmapDoor, wxDefaultPosition, FromDIP(wxSize(20, 20)));
 
-			m_progressBarBreak = new wxGauge(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
-			m_progressBarEnd = new wxGauge(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
+			m_progressBarBreak = new CustomProgressBar(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
+			m_progressBarEnd = new CustomProgressBar(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
 			m_progressBarBreak->SetValue(50);
 			m_progressBarEnd->SetValue(50);
 
@@ -56,8 +57,8 @@ namespace minutea
 	private:
 		bool m_dragging = false;
 		wxPoint m_dragStartPos;
-		wxGauge* m_progressBarBreak;
-		wxGauge* m_progressBarEnd;
+		CustomProgressBar* m_progressBarBreak;
+		CustomProgressBar* m_progressBarEnd;
 		wxStaticBitmap* iconTea;
 		wxStaticBitmap* iconDoor;
 
