@@ -8,7 +8,7 @@ namespace minutea
 	{
 		if (!wxApp::OnInit())
 			return false;
-		MainWindow* window = new MainWindow("Minutea App");
+		MainWindow* window = new MainWindow("");
 		window->Show(true);
 		return true;
 	}

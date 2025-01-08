@@ -1,6 +1,7 @@
 #pragma once
 
-constexpr auto FRAME_STYLE = wxFRAME_TOOL_WINDOW;
+constexpr auto FRAME_STYLE = wxFRAME_TOOL_WINDOW | wxSTAY_ON_TOP;
+// constexpr auto FRAME_STYLE = wxDEFAULT_FRAME_STYLE;
 
 namespace minutea
 {
@@ -17,7 +18,6 @@ namespace minutea
 			wxBitmap iconBitmapTea(wxT("cup-tea.png"), wxBITMAP_TYPE_PNG);
 			wxBitmap iconBitmapDoor(wxT("door-open-out.png"), wxBITMAP_TYPE_PNG);
 
-
 			iconTea = new wxStaticBitmap(this, wxID_ANY, iconBitmapTea, FromDIP(wxPoint(5, 5)), FromDIP(wxSize(20, 20)));
 			iconDoor = new wxStaticBitmap(this, wxID_ANY, iconBitmapDoor, FromDIP(wxPoint(5, 25)), FromDIP(wxSize(20, 20)));
 
@@ -26,21 +26,18 @@ namespace minutea
 			m_progressBarBreak->SetValue(50);
 			m_progressBarEnd->SetValue(50);
 
-			sizer = new wxBoxSizer(wxVERTICAL);
-			this->SetSizer(sizer);
-			this->Layout();
+			this->Fit();
 
-			setDragEvents(this);
 			setDragEvents(iconTea);
 			setDragEvents(iconDoor);
 			setDragEvents(m_progressBarBreak);
 			setDragEvents(m_progressBarEnd);
+			setDragEvents(this);
 		}
 
 	private:
 		bool m_dragging = false;
 		wxPoint m_dragStartPos;
-		wxBoxSizer* sizer;
 		wxGauge* m_progressBarBreak;
 		wxGauge* m_progressBarEnd;
 		wxStaticBitmap* iconTea;
@@ -56,16 +53,7 @@ namespace minutea
 		void OnLeftMouseDown(wxMouseEvent& event)
 		{
 			m_dragging = true;
-			wxPoint pos = event.GetPosition();
-
-			// If child element, calculate position relative to MainWindow
-			wxWindow* win = dynamic_cast<wxWindow*>(event.GetEventObject());
-			if (win && win != this)
-			{
-				pos = win->ClientToScreen(pos);
-				pos = ScreenToClient(pos);
-			}
-			m_dragStartPos = pos;
+			m_dragStartPos = wxGetMousePosition();;
 			CaptureMouse();
 		}
 
@@ -82,9 +70,12 @@ namespace minutea
 		{
 			if (m_dragging)
 			{
-				wxPoint pos = ClientToScreen(event.GetPosition());
-				wxPoint origin = pos - m_dragStartPos;
-				Move(origin);
+				wxPoint newMousePos = wxGetMousePosition();
+				wxPoint dragDelta = newMousePos - m_dragStartPos;
+				wxPoint newWindowPos = GetScreenPosition() + dragDelta;
+				SetPosition(newWindowPos);
+
+				m_dragStartPos = newMousePos;
 			}
 		}
 	};
