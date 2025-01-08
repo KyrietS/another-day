@@ -30,6 +30,8 @@ namespace minutea
 			m_progressBarEnd = new CustomProgressBar(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
 			m_progressBarBreak->SetValue(50);
 			m_progressBarEnd->SetValue(50);
+			m_progressBarBreak->SetText("Break");
+			m_progressBarEnd->SetText("End");
 
 			firstRowSizer->Add(iconTea, 0, wxALIGN_CENTER_VERTICAL | wxALL, 0);
 			firstRowSizer->Add(m_progressBarBreak, 0, wxALL, 0);
