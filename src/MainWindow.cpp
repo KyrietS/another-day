@@ -49,22 +49,28 @@ namespace minutea
 		this->Layout();
 		this->Fit();
 
-		setDragEvents(iconTea);
-		setDragEvents(iconDoor);
-		setDragEvents(m_progressBarBreak);
-		setDragEvents(m_progressBarEnd);
-		setDragEvents(this);
+		setEvents(iconTea);
+		setEvents(iconDoor);
+		setEvents(m_progressBarBreak);
+		setEvents(m_progressBarEnd);
+		setEvents(this);
 
 		wxTimer* timer = new wxTimer(this);
 		timer->Start(1000); // 1000 milliseconds = 1 second
 		Bind(wxEVT_TIMER, &MainWindow::OnTimer, this);
+		//Bind(wxEVT_MENU, &MainWindow::OnClose, this, wxID_ANY);
+		Bind(wxEVT_MENU, &MainWindow::OnHello, this, wxID_PRINT);
+		Bind(wxEVT_MENU, &MainWindow::OnClose, this, wxID_CLOSE);
+
+		//m_progressBarBreak->Bind(wxEVT_RIGHT_DOWN, &MainWindow::OnRightMouseDown, this);
 	}
 
-	void MainWindow::setDragEvents(wxEvtHandler* handler)
+	void MainWindow::setEvents(wxEvtHandler* handler)
 	{
 		handler->Bind(wxEVT_LEFT_DOWN, &MainWindow::OnLeftMouseDown, this);
 		handler->Bind(wxEVT_LEFT_UP, &MainWindow::OnLeftMouseUp, this);
 		handler->Bind(wxEVT_MOTION, &MainWindow::OnMouseMove, this);
+		handler->Bind(wxEVT_RIGHT_DOWN, &MainWindow::OnRightMouseDown, this);
 	}
 
 	void MainWindow::OnLeftMouseDown(wxMouseEvent& event)
@@ -102,5 +108,26 @@ namespace minutea
 		wxString counterString = wxString::Format(wxT("break in %d"), counter);
 		m_progressBarBreak->SetText(counterString);
 		m_progressBarBreak->SetValue(50 + counter);
+	}
+
+	void MainWindow::OnRightMouseDown(wxMouseEvent& event)
+	{
+		wxPoint positionInWindow = this->ScreenToClient(wxGetMousePosition());
+
+		wxMenu contextMenu;
+		contextMenu.Append(wxID_PRINT, wxT("Hello"));
+		contextMenu.AppendSeparator();
+		contextMenu.Append(wxID_CLOSE, wxT("Close"));
+		PopupMenu(&contextMenu, positionInWindow);
+	}
+
+	void MainWindow::OnHello(wxCommandEvent& event)
+	{
+		wxLogMessage("Hello world");
+	}
+
+	void MainWindow::OnClose(wxCommandEvent& event)
+	{
+		Close(true);
 	}
 }

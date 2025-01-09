@@ -20,11 +20,14 @@ namespace minutea
 		wxStaticBitmap* iconDoor;
 		int counter = 0;
 
-		void setDragEvents(wxEvtHandler* handler);
+		void setEvents(wxEvtHandler* handler);
 		void OnLeftMouseDown(wxMouseEvent& event);
 		void OnLeftMouseUp(wxMouseEvent& event);
 		void OnMouseMove(wxMouseEvent& event);
 		void OnTimer(wxTimerEvent& event);
+		void OnRightMouseDown(wxMouseEvent& event);
+		void OnHello(wxCommandEvent& event);
+		void OnClose(wxCommandEvent& event);
 	};
 
 }
