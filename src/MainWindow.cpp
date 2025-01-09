@@ -58,11 +58,8 @@ namespace minutea
 		wxTimer* timer = new wxTimer(this);
 		timer->Start(1000); // 1000 milliseconds = 1 second
 		Bind(wxEVT_TIMER, &MainWindow::OnTimer, this);
-		//Bind(wxEVT_MENU, &MainWindow::OnClose, this, wxID_ANY);
 		Bind(wxEVT_MENU, &MainWindow::OnHello, this, wxID_PRINT);
 		Bind(wxEVT_MENU, &MainWindow::OnClose, this, wxID_CLOSE);
-
-		//m_progressBarBreak->Bind(wxEVT_RIGHT_DOWN, &MainWindow::OnRightMouseDown, this);
 	}
 
 	void MainWindow::setEvents(wxEvtHandler* handler)
