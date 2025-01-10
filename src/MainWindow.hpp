@@ -35,6 +35,12 @@ namespace minutea
 		void OnRightMouseDown(wxMouseEvent& event);
 		void OnHello(wxCommandEvent& event);
 		void OnClose(wxCommandEvent& event);
+		void OnResetSession(wxCommandEvent& event);
+
+		enum Events
+		{
+			ID_RESET_SESSION = wxID_HIGHEST + 1
+		};
 	};
 
 }

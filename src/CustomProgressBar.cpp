@@ -53,6 +53,11 @@ void CustomProgressBar::SetTextColor(const wxColor& color)
     Refresh();
 }
 
+bool CustomProgressBar::IsFilled()
+{
+	return m_value >= m_range;
+}
+
 void CustomProgressBar::OnPaint(wxPaintEvent& event)
 {
     wxAutoBufferedPaintDC dc(this);

@@ -20,8 +20,8 @@ namespace minutea
 
 		iconTea = new wxStaticBitmap(this, wxID_ANY, iconBitmapTea, wxDefaultPosition, FromDIP(wxSize(20, 20)));
 		iconDoor = new wxStaticBitmap(this, wxID_ANY, iconBitmapDoor, wxDefaultPosition, FromDIP(wxSize(20, 20)));
-		iconTea->SetToolTip("Time for break");
-		iconDoor->SetToolTip("Time to go home");
+		iconTea->SetToolTip("Session time");
+		iconDoor->SetToolTip("Working time");
 
 		m_progressBarSession = new CustomProgressBar(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
 		m_progressBarWork = new CustomProgressBar(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
@@ -49,10 +49,11 @@ namespace minutea
 		setEvents(this);
 
 		wxTimer* timer = new wxTimer(this);
-		timer->Start(100); // clock refresh rate
+		timer->Start(1000); // clock refresh rate
 		Bind(wxEVT_TIMER, &MainWindow::OnTimer, this);
 		Bind(wxEVT_MENU, &MainWindow::OnHello, this, wxID_PRINT);
 		Bind(wxEVT_MENU, &MainWindow::OnClose, this, wxID_CLOSE);
+		Bind(wxEVT_MENU, &MainWindow::OnResetSession, this, ID_RESET_SESSION);
 
 		sessionStartTime = std::chrono::steady_clock::now();
 		workStartTime = std::chrono::steady_clock::now();
@@ -110,6 +111,11 @@ namespace minutea
 
 		m_progressBarSession->SetValue(std::chrono::duration_cast<std::chrono::seconds>(sessionTime).count());
 		m_progressBarWork->SetValue(std::chrono::duration_cast<std::chrono::seconds>(workingTime).count());
+
+		if (m_progressBarSession->IsFilled())
+		{
+			m_progressBarSession->SetFilledColor(wxBrush(wxColor(0xFFA500)));
+		}
 	}
 
 	void MainWindow::UpdateProgressBarLabels()
@@ -148,7 +154,7 @@ namespace minutea
 		wxPoint positionInWindow = this->ScreenToClient(wxGetMousePosition());
 
 		wxMenu contextMenu;
-		contextMenu.Append(wxID_PRINT, wxT("Hello"));
+		contextMenu.Append(ID_RESET_SESSION, wxT("Reset session"));
 		contextMenu.AppendSeparator();
 		contextMenu.Append(wxID_CLOSE, wxT("Close"));
 		PopupMenu(&contextMenu, positionInWindow);
@@ -163,4 +169,13 @@ namespace minutea
 	{
 		Close(true);
 	}
+
+	void MainWindow::OnResetSession(wxCommandEvent& event)
+	{
+		sessionStartTime = std::chrono::steady_clock::now();
+		m_progressBarSession->SetFilledColor(*wxGREEN_BRUSH);
+		UpdateProgressBarLabels();
+		UpdateProgressBarValues();
+	}
+
 }
