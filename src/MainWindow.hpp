@@ -1,5 +1,6 @@
 #pragma once
 #include "CustomProgressBar.hpp"
+#include <chrono>
 
 constexpr auto FRAME_STYLE = wxFRAME_TOOL_WINDOW | wxSTAY_ON_TOP;
 // constexpr auto FRAME_STYLE = wxDEFAULT_FRAME_STYLE;
@@ -14,11 +15,17 @@ namespace minutea
 	private:
 		bool m_dragging = false;
 		wxPoint m_dragStartPos;
-		CustomProgressBar* m_progressBarBreak;
-		CustomProgressBar* m_progressBarEnd;
+		CustomProgressBar* m_progressBarSession;
+		CustomProgressBar* m_progressBarWork;
 		wxStaticBitmap* iconTea;
 		wxStaticBitmap* iconDoor;
-		int counter = 0;
+		std::chrono::minutes sessionDuration = std::chrono::minutes(1);
+		std::chrono::hours workDuration = std::chrono::hours(8);
+		std::chrono::time_point<std::chrono::steady_clock> sessionStartTime;
+		std::chrono::time_point<std::chrono::steady_clock> workStartTime;
+
+		void UpdateProgressBarValues();
+		void UpdateProgressBarLabels();
 
 		void setEvents(wxEvtHandler* handler);
 		void OnLeftMouseDown(wxMouseEvent& event);

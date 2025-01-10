@@ -23,21 +23,14 @@ namespace minutea
 		iconTea->SetToolTip("Time for break");
 		iconDoor->SetToolTip("Time to go home");
 
-		m_progressBarBreak = new CustomProgressBar(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
-		m_progressBarEnd = new CustomProgressBar(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
-
-		wxString counterString = wxString::Format(wxT("break in %d"), counter);
-
-		m_progressBarBreak->SetValue(50);
-		m_progressBarEnd->SetValue(50);
-		m_progressBarBreak->SetText(counterString);
-		m_progressBarEnd->SetText("End");
+		m_progressBarSession = new CustomProgressBar(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
+		m_progressBarWork = new CustomProgressBar(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
 
 		firstRowSizer->Add(iconTea, 0, wxALIGN_CENTER_VERTICAL | wxALL, 0);
-		firstRowSizer->Add(m_progressBarBreak, 0, wxALL, 0);
+		firstRowSizer->Add(m_progressBarSession, 0, wxALL, 0);
 
 		secondRowSizer->Add(iconDoor, 0, wxALIGN_CENTER_VERTICAL | wxALL, 0);
-		secondRowSizer->Add(m_progressBarEnd, 0, wxALL, 0);
+		secondRowSizer->Add(m_progressBarWork, 0, wxALL, 0);
 
 		mainSizer->Add(firstRowSizer, 0, wxALIGN_LEFT | wxALL, 0);
 		mainSizer->AddSpacer(FromDIP(2));
@@ -51,15 +44,24 @@ namespace minutea
 
 		setEvents(iconTea);
 		setEvents(iconDoor);
-		setEvents(m_progressBarBreak);
-		setEvents(m_progressBarEnd);
+		setEvents(m_progressBarSession);
+		setEvents(m_progressBarWork);
 		setEvents(this);
 
 		wxTimer* timer = new wxTimer(this);
-		timer->Start(1000); // 1000 milliseconds = 1 second
+		timer->Start(100); // clock refresh rate
 		Bind(wxEVT_TIMER, &MainWindow::OnTimer, this);
 		Bind(wxEVT_MENU, &MainWindow::OnHello, this, wxID_PRINT);
 		Bind(wxEVT_MENU, &MainWindow::OnClose, this, wxID_CLOSE);
+
+		sessionStartTime = std::chrono::steady_clock::now();
+		workStartTime = std::chrono::steady_clock::now();
+
+		m_progressBarSession->SetRange(std::chrono::duration_cast<std::chrono::seconds>(sessionDuration).count());
+		m_progressBarWork->SetRange(std::chrono::duration_cast<std::chrono::seconds>(workDuration).count());
+
+		UpdateProgressBarLabels();
+		UpdateProgressBarValues();
 	}
 
 	void MainWindow::setEvents(wxEvtHandler* handler)
@@ -99,12 +101,46 @@ namespace minutea
 		}
 	}
 
+	void MainWindow::UpdateProgressBarValues()
+	{
+		std::chrono::time_point<std::chrono::steady_clock> now = std::chrono::steady_clock::now();
+
+		auto sessionTime = now - sessionStartTime;
+		auto workingTime = now - workStartTime;
+
+		m_progressBarSession->SetValue(std::chrono::duration_cast<std::chrono::seconds>(sessionTime).count());
+		m_progressBarWork->SetValue(std::chrono::duration_cast<std::chrono::seconds>(workingTime).count());
+	}
+
+	void MainWindow::UpdateProgressBarLabels()
+	{
+		std::chrono::time_point<std::chrono::steady_clock> now = std::chrono::steady_clock::now();
+
+		{
+			auto sessionTime = now - sessionStartTime;
+			auto sessionLeft = sessionDuration - sessionTime;
+			int hoursLeft = std::chrono::duration_cast<std::chrono::hours>(sessionLeft).count();
+			int minutesLeft = std::chrono::duration_cast<std::chrono::minutes>(sessionLeft).count() % 60;
+			int secondsLeft = std::chrono::duration_cast<std::chrono::seconds>(sessionLeft).count() % 60;
+			wxString sessionLeftString = wxString::Format(wxT("%02d:%02d:%02d"), hoursLeft, minutesLeft, secondsLeft);
+			m_progressBarSession->SetText(sessionLeftString);
+		}
+
+		{
+			auto workingTime = now - workStartTime;
+			auto workLeft = workDuration - workingTime;
+			int hoursLeft = std::chrono::duration_cast<std::chrono::hours>(workLeft).count();
+			int minutesLeft = std::chrono::duration_cast<std::chrono::minutes>(workLeft).count() % 60;
+			int secondsLeft = std::chrono::duration_cast<std::chrono::seconds>(workLeft).count() % 60;
+			wxString workLeftString = wxString::Format(wxT("%02d:%02d:%02d"), hoursLeft, minutesLeft, secondsLeft);
+			m_progressBarWork->SetText(workLeftString);
+		}
+	}
+
 	void MainWindow::OnTimer(wxTimerEvent& event)
 	{
-		counter++;
-		wxString counterString = wxString::Format(wxT("break in %d"), counter);
-		m_progressBarBreak->SetText(counterString);
-		m_progressBarBreak->SetValue(50 + counter);
+		UpdateProgressBarLabels();
+		UpdateProgressBarValues();
 	}
 
 	void MainWindow::OnRightMouseDown(wxMouseEvent& event)

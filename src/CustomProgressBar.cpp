@@ -7,6 +7,12 @@ CustomProgressBar::CustomProgressBar(wxWindow* parent, wxWindowID id, int range,
     Bind(wxEVT_PAINT, &CustomProgressBar::OnPaint, this);
 }
 
+void CustomProgressBar::SetRange(int range)
+{
+	m_range = range;
+	Refresh();
+}
+
 void CustomProgressBar::SetValue(int value)
 {
     m_value = value;

@@ -5,6 +5,7 @@ class CustomProgressBar : public wxPanel
 public:
     CustomProgressBar(wxWindow* parent, wxWindowID id, int range, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
 
+	void SetRange(int range);
     void SetValue(int value);
     int GetValue() const;
 
