@@ -18,7 +18,7 @@ namespace minutea
 
 	private:
 		bool m_dragging = false;
-		wxPoint m_dragStartPos;
+		wxPoint m_dragStartOffset;
 		CustomProgressBar* m_progressBarSession;
 		CustomProgressBar* m_progressBarWork;
 		wxStaticBitmap* iconTea;

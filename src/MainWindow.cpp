@@ -80,30 +80,30 @@ namespace minutea
 
 	void MainWindow::OnLeftMouseDown(wxMouseEvent& event)
 	{
-		m_dragging = true;
-		m_dragStartPos = wxGetMousePosition();;
 		CaptureMouse();
+		const wxWindow* win = dynamic_cast<wxWindow*>(event.GetEventObject());
+		const wxPoint mouseOnScreenPos = win->ClientToScreen(event.GetPosition());
+		const wxPoint windowOnScreenPos = GetPosition();
+		int xOffset = mouseOnScreenPos.x - windowOnScreenPos.x;
+		int yOffset = mouseOnScreenPos.y - windowOnScreenPos.y;
+		m_dragStartOffset = { xOffset, yOffset };
 	}
 
 	void MainWindow::OnLeftMouseUp(wxMouseEvent& event)
 	{
-		if (m_dragging)
+		if (HasCapture())
 		{
-			m_dragging = false;
 			ReleaseMouse();
 		}
 	}
 
 	void MainWindow::OnMouseMove(wxMouseEvent& event)
 	{
-		if (m_dragging)
+		if (event.Dragging() && event.LeftIsDown())
 		{
-			wxPoint newMousePos = wxGetMousePosition();
-			wxPoint dragDelta = newMousePos - m_dragStartPos;
-			wxPoint newWindowPos = GetScreenPosition() + dragDelta;
-			SetPosition(newWindowPos);
-
-			m_dragStartPos = newMousePos;
+			const wxWindow* win = dynamic_cast<wxWindow*>(event.GetEventObject());
+			wxPoint mouseOnScreenPos = win->ClientToScreen(event.GetPosition());
+			Move(mouseOnScreenPos.x - m_dragStartOffset.x, mouseOnScreenPos.y - m_dragStartOffset.y);
 		}
 	}
 
