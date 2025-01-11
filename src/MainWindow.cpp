@@ -159,6 +159,9 @@ namespace minutea
 
 		SetProgressBarText(m_progressBarWork, workStartTime, workDuration);
 		SetProgressBarValue(m_progressBarWork, workStartTime);
+
+		if (m_progressBarWork->IsFilled())
+			m_progressBarWork->SetFilledColor(*wxRED_BRUSH);
 	}
 
 	void MainWindow::PlayNotificationSound()
