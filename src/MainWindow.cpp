@@ -138,13 +138,13 @@ namespace minutea
 			if (m_progressBarSession->IsFilled())
 				m_progressBarSession->SetFilledColor(*wxRED_BRUSH);
 		}
-		else
+		else // break in progress
 		{
 			SetProgressBarText(m_progressBarSession, breakStartTime, breakDuration);
 			SetProgressBarValue(m_progressBarSession, breakStartTime);
 
 			if (m_progressBarSession->IsFilled())
-				m_progressBarSession->SetFilledColor(*wxRED_BRUSH);
+				OnResetSession(wxCommandEvent {});
 		}
 
 		SetProgressBarText(m_progressBarWork, workStartTime, workDuration);
@@ -200,7 +200,7 @@ namespace minutea
 		UpdateBars();
 	}
 
-	void MainWindow::OnResetSession(wxCommandEvent& event)
+	void MainWindow::OnResetSession(const wxCommandEvent& event)
 	{
 		breakInProgress = false;
 		sessionStartTime = std::chrono::steady_clock::now();

@@ -39,7 +39,7 @@ namespace minutea
 		void OnHello(wxCommandEvent& event);
 		void OnClose(wxCommandEvent& event);
 		void OnHide(wxCommandEvent& event);
-		void OnResetSession(wxCommandEvent& event);
+		void OnResetSession(const wxCommandEvent& event);
 		void OnStartBreak(wxCommandEvent& event);
 
 		enum Events
