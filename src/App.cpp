@@ -8,6 +8,10 @@ namespace minutea
 	{
 		if (!wxApp::OnInit())
 			return false;
+
+		SetAppName("Minutea");
+		wxConfig::Get()->SetRecordDefaults(true);
+
 		MainWindow* window = new MainWindow("");
 		window->Show(true);
 		return true;

@@ -3,12 +3,14 @@
 #include <chrono>
 #include <optional>
 
-constexpr auto FRAME_STYLE = wxSTAY_ON_TOP;
-//constexpr auto FRAME_STYLE = wxFRAME_TOOL_WINDOW | wxSTAY_ON_TOP;
-// constexpr auto FRAME_STYLE = wxDEFAULT_FRAME_STYLE;
-
 namespace minutea
 {
+	constexpr auto FRAME_STYLE = wxSTAY_ON_TOP;
+	//constexpr auto FRAME_STYLE = wxFRAME_TOOL_WINDOW | wxSTAY_ON_TOP;
+	// constexpr auto FRAME_STYLE = wxDEFAULT_FRAME_STYLE;
+
+	using Duration = std::common_type<std::chrono::seconds, std::common_type<std::chrono::minutes, std::chrono::hours>::type>::type;
+
 	class MainWindow : public wxFrame
 	{
 	public:
@@ -21,16 +23,16 @@ namespace minutea
 		CustomProgressBar* m_progressBarWork;
 		wxStaticBitmap* iconTea;
 		wxStaticBitmap* iconDoor;
-		std::chrono::seconds breakDuration { 10 };
-		std::chrono::seconds sessionDuration { 5 };
-		std::chrono::hours workDuration { 8 };
+		Duration breakDuration { std::chrono::seconds{wxConfig::Get()->Read("BreakDuration", 10) } };
+		Duration sessionDuration { std::chrono::seconds{ wxConfig::Get()->Read("SessionDuration", 5) } };
+		Duration workDuration { std::chrono::hours{ wxConfig::Get()->Read("WorkDuration", 8) } };
 		std::chrono::steady_clock::time_point breakStartTime;
 		std::chrono::steady_clock::time_point sessionStartTime;
 		std::chrono::steady_clock::time_point workStartTime;
 		bool breakInProgress = false;
 
 		std::optional<std::chrono::steady_clock::time_point> lastNotificationTime;
-		std::chrono::seconds notificationInterval { 60 };
+		Duration notificationInterval { std::chrono::seconds{wxConfig::Get()->Read("NotificationInterval", 60) } };
 		wxSound notificationSound;
 
 		void UpdateBars();
