@@ -2,7 +2,8 @@
 #include "CustomProgressBar.hpp"
 #include <chrono>
 
-constexpr auto FRAME_STYLE = wxFRAME_TOOL_WINDOW | wxSTAY_ON_TOP;
+constexpr auto FRAME_STYLE = wxSTAY_ON_TOP;
+//constexpr auto FRAME_STYLE = wxFRAME_TOOL_WINDOW | wxSTAY_ON_TOP;
 // constexpr auto FRAME_STYLE = wxDEFAULT_FRAME_STYLE;
 
 namespace minutea
@@ -35,6 +36,7 @@ namespace minutea
 		void OnRightMouseDown(wxMouseEvent& event);
 		void OnHello(wxCommandEvent& event);
 		void OnClose(wxCommandEvent& event);
+		void OnHide(wxCommandEvent& event);
 		void OnResetSession(wxCommandEvent& event);
 
 		enum Events

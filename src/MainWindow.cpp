@@ -54,6 +54,7 @@ namespace minutea
 		Bind(wxEVT_MENU, &MainWindow::OnHello, this, wxID_PRINT);
 		Bind(wxEVT_MENU, &MainWindow::OnClose, this, wxID_CLOSE);
 		Bind(wxEVT_MENU, &MainWindow::OnResetSession, this, ID_RESET_SESSION);
+		Bind(wxEVT_MENU, &MainWindow::OnHide, this, wxID_ICONIZE_FRAME);
 
 		sessionStartTime = std::chrono::steady_clock::now();
 		workStartTime = std::chrono::steady_clock::now();
@@ -155,6 +156,7 @@ namespace minutea
 
 		wxMenu contextMenu;
 		contextMenu.Append(ID_RESET_SESSION, wxT("Reset session"));
+		contextMenu.Append(wxID_ICONIZE_FRAME, wxT("Hide"));
 		contextMenu.AppendSeparator();
 		contextMenu.Append(wxID_CLOSE, wxT("Close"));
 		PopupMenu(&contextMenu, positionInWindow);
@@ -168,6 +170,11 @@ namespace minutea
 	void MainWindow::OnClose(wxCommandEvent& event)
 	{
 		Close(true);
+	}
+
+	void MainWindow::OnHide(wxCommandEvent& event)
+	{
+		Iconize(true);
 	}
 
 	void MainWindow::OnResetSession(wxCommandEvent& event)
