@@ -119,29 +119,23 @@ namespace minutea
 		}
 	}
 
+	template<typename Duration>
+	void SetProgressBarText(CustomProgressBar* progressBar, std::chrono::steady_clock::time_point startPoint, Duration duration)
+	{
+		auto timePassed = std::chrono::steady_clock::now() - startPoint;
+		auto timeLeft = duration - timePassed;
+
+		int hours = std::chrono::duration_cast<std::chrono::hours>(timeLeft).count();
+		int minutes = std::chrono::duration_cast<std::chrono::minutes>(timeLeft).count() % 60;
+		int seconds = std::chrono::duration_cast<std::chrono::seconds>(timeLeft).count() % 60;
+		wxString text = wxString::Format(wxT("%02d:%02d:%02d"), hours, minutes, seconds);
+		progressBar->SetText(text);
+	}
+
 	void MainWindow::UpdateProgressBarLabels()
 	{
-		std::chrono::time_point<std::chrono::steady_clock> now = std::chrono::steady_clock::now();
-
-		{
-			auto sessionTime = now - sessionStartTime;
-			auto sessionLeft = sessionDuration - sessionTime;
-			int hoursLeft = std::chrono::duration_cast<std::chrono::hours>(sessionLeft).count();
-			int minutesLeft = std::chrono::duration_cast<std::chrono::minutes>(sessionLeft).count() % 60;
-			int secondsLeft = std::chrono::duration_cast<std::chrono::seconds>(sessionLeft).count() % 60;
-			wxString sessionLeftString = wxString::Format(wxT("%02d:%02d:%02d"), hoursLeft, minutesLeft, secondsLeft);
-			m_progressBarSession->SetText(sessionLeftString);
-		}
-
-		{
-			auto workingTime = now - workStartTime;
-			auto workLeft = workDuration - workingTime;
-			int hoursLeft = std::chrono::duration_cast<std::chrono::hours>(workLeft).count();
-			int minutesLeft = std::chrono::duration_cast<std::chrono::minutes>(workLeft).count() % 60;
-			int secondsLeft = std::chrono::duration_cast<std::chrono::seconds>(workLeft).count() % 60;
-			wxString workLeftString = wxString::Format(wxT("%02d:%02d:%02d"), hoursLeft, minutesLeft, secondsLeft);
-			m_progressBarWork->SetText(workLeftString);
-		}
+		SetProgressBarText(m_progressBarSession, sessionStartTime, sessionDuration);
+		SetProgressBarText(m_progressBarWork, workStartTime, workDuration);
 	}
 
 	void MainWindow::OnTimer(wxTimerEvent& event)
