@@ -182,11 +182,15 @@ namespace minutea
 
 		wxMenu contextMenu;
 
+#ifdef __WINDOWS__
 		wxFont font = GetFont();
 		font.SetWeight(wxFONTWEIGHT_BOLD);
 		wxMenuItem* item = new wxMenuItem(&contextMenu, ID_START_BREAK, wxT("Start break"));
 		item->SetFont(font);
 		contextMenu.Append(item);
+#else
+		contextMenu.Append(ID_START_BREAK, wxT("Start break"));
+#endif
 
 		contextMenu.Append(ID_RESET_SESSION, wxT("Reset session"));
 		contextMenu.Append(wxID_ICONIZE_FRAME, wxT("Hide"));
