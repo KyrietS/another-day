@@ -20,13 +20,15 @@ namespace minutea
 		CustomProgressBar* m_progressBarWork;
 		wxStaticBitmap* iconTea;
 		wxStaticBitmap* iconDoor;
-		std::chrono::minutes sessionDuration = std::chrono::minutes(1);
-		std::chrono::hours workDuration = std::chrono::hours(8);
-		std::chrono::time_point<std::chrono::steady_clock> sessionStartTime;
-		std::chrono::time_point<std::chrono::steady_clock> workStartTime;
+		std::chrono::seconds breakDuration { 10 };
+		std::chrono::seconds sessionDuration { 5 };
+		std::chrono::hours workDuration { 8 };
+		std::chrono::steady_clock::time_point breakStartTime;
+		std::chrono::steady_clock::time_point sessionStartTime;
+		std::chrono::steady_clock::time_point workStartTime;
+		bool breakInProgress = false;
 
-		void UpdateProgressBarValues();
-		void UpdateProgressBarLabels();
+		void UpdateBars();
 
 		void setEvents(wxEvtHandler* handler);
 		void OnLeftMouseDown(wxMouseEvent& event);
@@ -38,10 +40,12 @@ namespace minutea
 		void OnClose(wxCommandEvent& event);
 		void OnHide(wxCommandEvent& event);
 		void OnResetSession(wxCommandEvent& event);
+		void OnStartBreak(wxCommandEvent& event);
 
 		enum Events
 		{
-			ID_RESET_SESSION = wxID_HIGHEST + 1
+			ID_RESET_SESSION = wxID_HIGHEST + 1,
+			ID_START_BREAK
 		};
 	};
 

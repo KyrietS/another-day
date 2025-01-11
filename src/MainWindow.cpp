@@ -49,12 +49,13 @@ namespace minutea
 		setEvents(this);
 
 		wxTimer* timer = new wxTimer(this);
-		timer->Start(1000); // clock refresh rate
+		timer->Start(1001); // clock refresh rate
 		Bind(wxEVT_TIMER, &MainWindow::OnTimer, this);
 		Bind(wxEVT_MENU, &MainWindow::OnHello, this, wxID_PRINT);
 		Bind(wxEVT_MENU, &MainWindow::OnClose, this, wxID_CLOSE);
 		Bind(wxEVT_MENU, &MainWindow::OnResetSession, this, ID_RESET_SESSION);
 		Bind(wxEVT_MENU, &MainWindow::OnHide, this, wxID_ICONIZE_FRAME);
+		Bind(wxEVT_MENU, &MainWindow::OnStartBreak, this, ID_START_BREAK);
 
 		sessionStartTime = std::chrono::steady_clock::now();
 		workStartTime = std::chrono::steady_clock::now();
@@ -62,8 +63,7 @@ namespace minutea
 		m_progressBarSession->SetRange(std::chrono::duration_cast<std::chrono::seconds>(sessionDuration).count());
 		m_progressBarWork->SetRange(std::chrono::duration_cast<std::chrono::seconds>(workDuration).count());
 
-		UpdateProgressBarLabels();
-		UpdateProgressBarValues();
+		UpdateBars();
 	}
 
 	void MainWindow::setEvents(wxEvtHandler* handler)
@@ -103,20 +103,10 @@ namespace minutea
 		}
 	}
 
-	void MainWindow::UpdateProgressBarValues()
+	static void SetProgressBarValue(CustomProgressBar* progressBar, std::chrono::steady_clock::time_point startPoint)
 	{
-		std::chrono::time_point<std::chrono::steady_clock> now = std::chrono::steady_clock::now();
-
-		auto sessionTime = now - sessionStartTime;
-		auto workingTime = now - workStartTime;
-
-		m_progressBarSession->SetValue(std::chrono::duration_cast<std::chrono::seconds>(sessionTime).count());
-		m_progressBarWork->SetValue(std::chrono::duration_cast<std::chrono::seconds>(workingTime).count());
-
-		if (m_progressBarSession->IsFilled())
-		{
-			m_progressBarSession->SetFilledColor(wxBrush(wxColor(0xFFA500)));
-		}
+		auto timePassed = std::chrono::steady_clock::now() - startPoint;
+		progressBar->SetValue(std::chrono::duration_cast<std::chrono::seconds>(timePassed).count());
 	}
 
 	template<typename Duration>
@@ -125,6 +115,11 @@ namespace minutea
 		auto timePassed = std::chrono::steady_clock::now() - startPoint;
 		auto timeLeft = duration - timePassed;
 
+		if (timeLeft.count() < 0)
+		{
+			timeLeft = {};
+		}
+
 		int hours = std::chrono::duration_cast<std::chrono::hours>(timeLeft).count();
 		int minutes = std::chrono::duration_cast<std::chrono::minutes>(timeLeft).count() % 60;
 		int seconds = std::chrono::duration_cast<std::chrono::seconds>(timeLeft).count() % 60;
@@ -132,16 +127,32 @@ namespace minutea
 		progressBar->SetText(text);
 	}
 
-	void MainWindow::UpdateProgressBarLabels()
+	void MainWindow::UpdateBars()
 	{
-		SetProgressBarText(m_progressBarSession, sessionStartTime, sessionDuration);
+		if (not breakInProgress)
+		{
+			SetProgressBarText(m_progressBarSession, sessionStartTime, sessionDuration);
+			SetProgressBarValue(m_progressBarSession, sessionStartTime);
+
+			if (m_progressBarSession->IsFilled())
+				m_progressBarSession->SetFilledColor(*wxRED_BRUSH);
+		}
+		else
+		{
+			SetProgressBarText(m_progressBarSession, breakStartTime, breakDuration);
+			SetProgressBarValue(m_progressBarSession, breakStartTime);
+
+			if (m_progressBarSession->IsFilled())
+				m_progressBarSession->SetFilledColor(*wxRED_BRUSH);
+		}
+
 		SetProgressBarText(m_progressBarWork, workStartTime, workDuration);
+		SetProgressBarValue(m_progressBarWork, workStartTime);
 	}
 
 	void MainWindow::OnTimer(wxTimerEvent& event)
 	{
-		UpdateProgressBarLabels();
-		UpdateProgressBarValues();
+		UpdateBars();
 	}
 
 	void MainWindow::OnRightMouseDown(wxMouseEvent& event)
@@ -149,6 +160,14 @@ namespace minutea
 		wxPoint positionInWindow = this->ScreenToClient(wxGetMousePosition());
 
 		wxMenu contextMenu;
+
+		wxFont font = GetFont();
+		font.SetWeight(wxFONTWEIGHT_BOLD);
+		wxMenuItem* item = new wxMenuItem(&contextMenu, ID_START_BREAK, wxT("Start break"));
+		item->GetFont().SetWeight(wxFONTWEIGHT_BOLD);
+		item->SetFont(font);
+		contextMenu.Append(item);
+
 		contextMenu.Append(ID_RESET_SESSION, wxT("Reset session"));
 		contextMenu.Append(wxID_ICONIZE_FRAME, wxT("Hide"));
 		contextMenu.AppendSeparator();
@@ -171,12 +190,24 @@ namespace minutea
 		Iconize(true);
 	}
 
+	void MainWindow::OnStartBreak(wxCommandEvent& event)
+	{
+		breakInProgress = true;
+		breakStartTime = std::chrono::steady_clock::now();
+		m_progressBarSession->SetFilledColor(wxBrush(wxColor("#00A5FF")));
+		m_progressBarSession->SetRange(std::chrono::duration_cast<std::chrono::seconds>(breakDuration).count());
+		
+		UpdateBars();
+	}
+
 	void MainWindow::OnResetSession(wxCommandEvent& event)
 	{
+		breakInProgress = false;
 		sessionStartTime = std::chrono::steady_clock::now();
 		m_progressBarSession->SetFilledColor(*wxGREEN_BRUSH);
-		UpdateProgressBarLabels();
-		UpdateProgressBarValues();
+		m_progressBarSession->SetRange(std::chrono::duration_cast<std::chrono::seconds>(sessionDuration).count());
+
+		UpdateBars();
 	}
 
 }
