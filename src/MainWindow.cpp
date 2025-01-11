@@ -113,7 +113,8 @@ namespace minutea
 	void SetProgressBarText(CustomProgressBar* progressBar, std::chrono::steady_clock::time_point startPoint, Duration duration)
 	{
 		auto timePassed = std::chrono::steady_clock::now() - startPoint;
-		auto timeLeft = duration - timePassed;
+		auto timePassedInSeconds = std::chrono::duration_cast<std::chrono::seconds>(timePassed);
+		auto timeLeft = duration - timePassedInSeconds;
 
 		if (timeLeft.count() < 0)
 		{
@@ -164,7 +165,6 @@ namespace minutea
 		wxFont font = GetFont();
 		font.SetWeight(wxFONTWEIGHT_BOLD);
 		wxMenuItem* item = new wxMenuItem(&contextMenu, ID_START_BREAK, wxT("Start break"));
-		item->GetFont().SetWeight(wxFONTWEIGHT_BOLD);
 		item->SetFont(font);
 		contextMenu.Append(item);
 
