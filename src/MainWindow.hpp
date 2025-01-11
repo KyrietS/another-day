@@ -1,6 +1,7 @@
 #pragma once
 #include "CustomProgressBar.hpp"
 #include <chrono>
+#include <optional>
 
 constexpr auto FRAME_STYLE = wxSTAY_ON_TOP;
 //constexpr auto FRAME_STYLE = wxFRAME_TOOL_WINDOW | wxSTAY_ON_TOP;
@@ -28,7 +29,12 @@ namespace minutea
 		std::chrono::steady_clock::time_point workStartTime;
 		bool breakInProgress = false;
 
+		std::optional<std::chrono::steady_clock::time_point> lastNotificationTime;
+		std::chrono::seconds notificationInterval { 60 };
+		wxSound notificationSound;
+
 		void UpdateBars();
+		void PlayNotificationSound();
 
 		void setEvents(wxEvtHandler* handler);
 		void OnLeftMouseDown(wxMouseEvent& event);

@@ -57,6 +57,11 @@ namespace minutea
 		Bind(wxEVT_MENU, &MainWindow::OnHide, this, wxID_ICONIZE_FRAME);
 		Bind(wxEVT_MENU, &MainWindow::OnStartBreak, this, ID_START_BREAK);
 
+		if (not notificationSound.Create(wxT("notification.wav")))
+		{
+			wxLogError("Failed to load notification.wav");
+		}
+
 		sessionStartTime = std::chrono::steady_clock::now();
 		workStartTime = std::chrono::steady_clock::now();
 
@@ -136,7 +141,10 @@ namespace minutea
 			SetProgressBarValue(m_progressBarSession, sessionStartTime);
 
 			if (m_progressBarSession->IsFilled())
+			{
+				PlayNotificationSound();
 				m_progressBarSession->SetFilledColor(*wxRED_BRUSH);
+			}
 		}
 		else // break in progress
 		{
@@ -144,11 +152,24 @@ namespace minutea
 			SetProgressBarValue(m_progressBarSession, breakStartTime);
 
 			if (m_progressBarSession->IsFilled())
+			{
+				PlayNotificationSound();
 				OnResetSession(wxCommandEvent {});
+			}
 		}
 
 		SetProgressBarText(m_progressBarWork, workStartTime, workDuration);
 		SetProgressBarValue(m_progressBarWork, workStartTime);
+	}
+
+	void MainWindow::PlayNotificationSound()
+	{
+		if (not lastNotificationTime.has_value() or 
+			std::chrono::steady_clock::now() - lastNotificationTime.value() > notificationInterval)
+		{
+			notificationSound.Play();
+			lastNotificationTime = std::chrono::steady_clock::now();
+		}
 	}
 
 	void MainWindow::OnTimer(wxTimerEvent& event)
@@ -196,7 +217,8 @@ namespace minutea
 		breakStartTime = std::chrono::steady_clock::now();
 		m_progressBarSession->SetFilledColor(wxBrush(wxColor("#00A5FF")));
 		m_progressBarSession->SetRange(std::chrono::duration_cast<std::chrono::seconds>(breakDuration).count());
-		
+		lastNotificationTime.reset();
+
 		UpdateBars();
 	}
 
@@ -206,6 +228,7 @@ namespace minutea
 		sessionStartTime = std::chrono::steady_clock::now();
 		m_progressBarSession->SetFilledColor(*wxGREEN_BRUSH);
 		m_progressBarSession->SetRange(std::chrono::duration_cast<std::chrono::seconds>(sessionDuration).count());
+		lastNotificationTime.reset();
 
 		UpdateBars();
 	}
