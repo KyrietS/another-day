@@ -291,7 +291,7 @@ void MainWindow::CreateTrayIcon()
 
     m_taskBarIcon->Bind(wxEVT_TASKBAR_LEFT_UP, [this](wxTaskBarIconEvent&) { this->OnReveal(wxCommandEvent{}); });
 
-    m_taskBarIcon->Bind(wxEVT_TASKBAR_RIGHT_UP, [this](wxTaskBarIconEvent&) {
+    m_taskBarIcon->Bind(wxEVT_TASKBAR_CLICK, [this](wxTaskBarIconEvent&) {
         wxMenu menu;
         menu.SetEventHandler(this);
         menu.Append(ID_REVEAL, "Reveal");
