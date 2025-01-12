@@ -1,7 +1,7 @@
 #pragma once
 #include "MainWindow.hpp"
 
-namespace minutea
+namespace another_day
 {
 	class App : public wxApp
 	{

@@ -6,5 +6,5 @@
 
 #pragma warning(push)
 #pragma warning(disable : 28251)
-wxIMPLEMENT_APP(minutea::App);
+wxIMPLEMENT_APP(another_day::App);
 #pragma warning(pop)

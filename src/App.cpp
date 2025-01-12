@@ -8,7 +8,7 @@ extern "C" void OnSigInt(int sig)
 	exit(sig);
 }
 
-namespace minutea
+namespace another_day
 {
 	bool App::OnInit()
 	{
@@ -18,7 +18,7 @@ namespace minutea
 		if (!wxApp::OnInit())
 			return false;
 
-		SetAppName("Minutea");
+		SetAppName("another-day");
 		wxConfig::Get()->SetRecordDefaults(true);
 
 		MainWindow* window = new MainWindow("");

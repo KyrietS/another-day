@@ -3,7 +3,7 @@
 #include <chrono>
 #include <optional>
 
-namespace minutea
+namespace another_day
 {
 	constexpr auto FRAME_STYLE = wxSTAY_ON_TOP;
 	//constexpr auto FRAME_STYLE = wxFRAME_TOOL_WINDOW | wxSTAY_ON_TOP;

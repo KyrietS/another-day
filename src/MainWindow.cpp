@@ -1,7 +1,7 @@
 #include "pch.hpp"
 #include "MainWindow.hpp"
 
-namespace minutea
+namespace another_day
 {
 	MainWindow::MainWindow(const wxString& title)
 		: wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, FRAME_STYLE)
