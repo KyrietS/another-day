@@ -1,5 +1,7 @@
 #pragma once
 
+namespace another_day
+{
 class CustomProgressBar : public wxPanel
 {
 public:
@@ -30,3 +32,4 @@ private:
     wxBrush m_emptyBrush = *wxLIGHT_GREY_BRUSH;
     wxColor m_textColor = *wxBLACK;
 };
+} // namespace another_day

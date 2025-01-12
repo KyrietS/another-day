@@ -2,6 +2,8 @@
 
 #include "CustomProgressBar.hpp"
 
+namespace another_day
+{
 CustomProgressBar::CustomProgressBar(wxWindow* parent, wxWindowID id, int range, const wxPoint& pos, const wxSize& size)
     : wxPanel(parent, id, pos, size), m_value(0), m_range(range)
 {
@@ -84,3 +86,4 @@ void CustomProgressBar::OnPaint(wxPaintEvent& event)
     dc.DrawText(m_text, (size.GetWidth() - dc.GetTextExtent(m_text).GetWidth()) / 2,
                 (size.GetHeight() - dc.GetTextExtent(m_text).GetHeight()) / 2);
 }
+} // namespace another_day
