@@ -51,7 +51,8 @@ private:
     void OnTimer(wxTimerEvent& event);
     void OnRightMouseDown(wxMouseEvent& event);
     void OnHello(wxCommandEvent& event);
-    void OnClose(wxCommandEvent& event);
+    void OnExit(wxCommandEvent& event);
+    void OnClose(wxCloseEvent& event);
     void OnHideToTray(wxCommandEvent& event);
     void OnHide(wxCommandEvent& event);
     void OnReveal(const wxCommandEvent& event);

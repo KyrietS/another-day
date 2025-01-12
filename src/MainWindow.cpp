@@ -52,12 +52,13 @@ MainWindow::MainWindow(const wxString& title)
     timer->Start(1001); // clock refresh rate
     Bind(wxEVT_TIMER, &MainWindow::OnTimer, this);
     Bind(wxEVT_MENU, &MainWindow::OnHello, this, wxID_PRINT);
-    Bind(wxEVT_MENU, &MainWindow::OnClose, this, wxID_EXIT);
+    Bind(wxEVT_MENU, &MainWindow::OnExit, this, wxID_EXIT);
     Bind(wxEVT_MENU, &MainWindow::OnResetSession, this, ID_RESET_SESSION);
     Bind(wxEVT_MENU, &MainWindow::OnHideToTray, this, ID_HIDE_TO_TRAY);
     Bind(wxEVT_MENU, &MainWindow::OnHide, this, wxID_ICONIZE_FRAME);
     Bind(wxEVT_MENU, &MainWindow::OnStartBreak, this, ID_START_BREAK);
     Bind(wxEVT_MENU, &MainWindow::OnReveal, this, ID_REVEAL);
+    Bind(wxEVT_CLOSE_WINDOW, &MainWindow::OnClose, this);
 
     if (not notificationSound.Create(wxT("notification.wav")))
     {
@@ -220,9 +221,22 @@ void MainWindow::OnHello(wxCommandEvent& event)
     wxLogMessage("Hello world");
 }
 
-void MainWindow::OnClose(wxCommandEvent& event)
+void MainWindow::OnExit(wxCommandEvent& event)
 {
-    Close(true);
+    Close();
+}
+
+void MainWindow::OnClose(wxCloseEvent& event)
+{
+    if (event.CanVeto())
+    {
+        if (wxMessageBox("Are you sure you want to quit?\nAll progress will be lost.", "Exit", wxICON_WARNING | wxYES_NO) != wxYES)
+        {
+            event.Veto();
+            return;
+        }
+    }
+    event.Skip(); // use the default handler
 }
 
 void MainWindow::OnHide(wxCommandEvent& event)
