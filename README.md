@@ -5,6 +5,10 @@
 
 another-day is your personal working time guardian. It is an easy to use desktop application that alerts you when it's time to take a break or stop working.
 
+|Windows|Linux (GTK)|
+|---|---|
+|![gui windows](docs/gui-windows.png)|   |
+
 ## Features
 
 - ✅ *Take a break* reminder
