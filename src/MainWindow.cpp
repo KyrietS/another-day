@@ -48,7 +48,7 @@ MainWindow::MainWindow(const wxString& title)
     setEvents(m_progressBarWork);
     setEvents(this);
 
-    wxTimer* timer = new wxTimer(this);
+    timer = new wxTimer(this);
     timer->Start(1001); // clock refresh rate
     Bind(wxEVT_TIMER, &MainWindow::OnTimer, this);
     Bind(wxEVT_MENU, &MainWindow::OnHello, this, wxID_PRINT);
@@ -69,6 +69,11 @@ MainWindow::MainWindow(const wxString& title)
     m_progressBarWork->SetRange(std::chrono::duration_cast<std::chrono::seconds>(workDuration).count());
 
     UpdateBars();
+}
+
+MainWindow::~MainWindow()
+{
+    timer->Stop();
 }
 
 void MainWindow::setEvents(wxEvtHandler* handler)

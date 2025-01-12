@@ -16,6 +16,7 @@ class MainWindow : public wxFrame
 {
 public:
     MainWindow(const wxString& title);
+    ~MainWindow();
 
 private:
     bool m_dragging = false;
@@ -24,6 +25,7 @@ private:
     CustomProgressBar* m_progressBarWork;
     wxStaticBitmap* iconTea;
     wxStaticBitmap* iconDoor;
+    wxTimer* timer;
     Duration breakDuration{std::chrono::seconds{wxConfig::Get()->Read("BreakDuration", 10)}};
     Duration sessionDuration{std::chrono::seconds{wxConfig::Get()->Read("SessionDuration", 5)}};
     Duration workDuration{std::chrono::hours{wxConfig::Get()->Read("WorkDuration", 8)}};
