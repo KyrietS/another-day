@@ -1,7 +1,7 @@
 # another-day
 [![Build](https://github.com/KyrietS/another-day/actions/workflows/build.yml/badge.svg)](https://github.com/KyrietS/another-day/actions/workflows/build.yml)
 [![Formatting](https://github.com/KyrietS/another-day/actions/workflows/formatting.yml/badge.svg)](https://github.com/KyrietS/another-day/actions/workflows/formatting.yml)
-[![Lincense](https://img.shields.io/github/license/KyrietS/another-day)](LICENSE.txt)
+[![Lincense](https://img.shields.io/github/license/KyrietS/another-day)](LICENSE)
 
 another-day is your personal working time guardian. It is an easy to use desktop application that alerts you when it's time to take a break or stop working.
 
