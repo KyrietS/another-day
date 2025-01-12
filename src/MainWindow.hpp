@@ -38,6 +38,9 @@ private:
     Duration notificationInterval{std::chrono::seconds{wxConfig::Get()->Read("NotificationInterval", 60)}};
     wxSound notificationSound;
 
+    std::unique_ptr<wxTaskBarIcon> m_taskBarIcon;
+    void CreateTrayIcon();
+
     void UpdateBars();
     void PlayNotificationSound();
 
@@ -49,14 +52,18 @@ private:
     void OnRightMouseDown(wxMouseEvent& event);
     void OnHello(wxCommandEvent& event);
     void OnClose(wxCommandEvent& event);
+    void OnHideToTray(wxCommandEvent& event);
     void OnHide(wxCommandEvent& event);
+    void OnReveal(const wxCommandEvent& event);
     void OnResetSession(const wxCommandEvent& event);
     void OnStartBreak(wxCommandEvent& event);
 
     enum Events
     {
         ID_RESET_SESSION = wxID_HIGHEST + 1,
-        ID_START_BREAK
+        ID_START_BREAK,
+        ID_HIDE_TO_TRAY,
+        ID_REVEAL
     };
 };
 

@@ -52,10 +52,12 @@ MainWindow::MainWindow(const wxString& title)
     timer->Start(1001); // clock refresh rate
     Bind(wxEVT_TIMER, &MainWindow::OnTimer, this);
     Bind(wxEVT_MENU, &MainWindow::OnHello, this, wxID_PRINT);
-    Bind(wxEVT_MENU, &MainWindow::OnClose, this, wxID_CLOSE);
+    Bind(wxEVT_MENU, &MainWindow::OnClose, this, wxID_EXIT);
     Bind(wxEVT_MENU, &MainWindow::OnResetSession, this, ID_RESET_SESSION);
+    Bind(wxEVT_MENU, &MainWindow::OnHideToTray, this, ID_HIDE_TO_TRAY);
     Bind(wxEVT_MENU, &MainWindow::OnHide, this, wxID_ICONIZE_FRAME);
     Bind(wxEVT_MENU, &MainWindow::OnStartBreak, this, ID_START_BREAK);
+    Bind(wxEVT_MENU, &MainWindow::OnReveal, this, ID_REVEAL);
 
     if (not notificationSound.Create(wxT("notification.wav")))
     {
@@ -146,7 +148,7 @@ void MainWindow::UpdateBars()
         SetProgressBarText(m_progressBarSession, sessionStartTime, sessionDuration);
         SetProgressBarValue(m_progressBarSession, sessionStartTime);
 
-        if (m_progressBarSession->IsFilled())
+        if (m_progressBarSession->IsFilled()) // session is over
         {
             PlayNotificationSound();
             m_progressBarSession->SetFilledColor(*wxRED_BRUSH);
@@ -157,7 +159,7 @@ void MainWindow::UpdateBars()
         SetProgressBarText(m_progressBarSession, breakStartTime, breakDuration);
         SetProgressBarValue(m_progressBarSession, breakStartTime);
 
-        if (m_progressBarSession->IsFilled())
+        if (m_progressBarSession->IsFilled()) // break is over
         {
             PlayNotificationSound();
             OnResetSession(wxCommandEvent{});
@@ -178,6 +180,7 @@ void MainWindow::PlayNotificationSound()
     {
         notificationSound.Play();
         lastNotificationTime = std::chrono::steady_clock::now();
+        Show(); // show the window if it's hidden in the tray
     }
 }
 
@@ -202,10 +205,13 @@ void MainWindow::OnRightMouseDown(wxMouseEvent& event)
     contextMenu.Append(ID_START_BREAK, wxT("Start break"));
 #endif
 
-    contextMenu.Append(ID_RESET_SESSION, wxT("Reset session"));
-    contextMenu.Append(wxID_ICONIZE_FRAME, wxT("Hide"));
+    contextMenu.Append(ID_RESET_SESSION, wxT("Start session"));
     contextMenu.AppendSeparator();
-    contextMenu.Append(wxID_CLOSE, wxT("Close"));
+    if (wxTaskBarIcon::IsAvailable())
+        contextMenu.Append(ID_HIDE_TO_TRAY, wxT("Hide (tray)"));
+    contextMenu.Append(wxID_ICONIZE_FRAME, wxT("Hide (minimize)"));
+    contextMenu.AppendSeparator();
+    contextMenu.Append(wxID_EXIT, wxT("Exit"));
     PopupMenu(&contextMenu, positionInWindow);
 }
 
@@ -222,6 +228,12 @@ void MainWindow::OnClose(wxCommandEvent& event)
 void MainWindow::OnHide(wxCommandEvent& event)
 {
     Iconize(true);
+}
+
+void MainWindow::OnReveal(const wxCommandEvent& event)
+{
+    Show(true);
+    Restore();
 }
 
 void MainWindow::OnStartBreak(wxCommandEvent& event)
@@ -244,6 +256,34 @@ void MainWindow::OnResetSession(const wxCommandEvent& event)
     lastNotificationTime.reset();
 
     UpdateBars();
+}
+
+void MainWindow::OnHideToTray(wxCommandEvent& event)
+{
+    if (not wxTaskBarIcon::IsAvailable())
+        return;
+
+    Hide();
+    CreateTrayIcon();
+}
+
+void MainWindow::CreateTrayIcon()
+{
+    m_taskBarIcon = std::make_unique<wxTaskBarIcon>();
+    wxIcon icon;
+    icon.LoadFile("door-open-out.png", wxBITMAP_TYPE_PNG);
+    m_taskBarIcon->SetIcon(icon, "Another Day");
+
+    m_taskBarIcon->Bind(wxEVT_TASKBAR_LEFT_UP, [this](wxTaskBarIconEvent&) { this->OnReveal(wxCommandEvent{}); });
+
+    m_taskBarIcon->Bind(wxEVT_TASKBAR_RIGHT_UP, [this](wxTaskBarIconEvent&) {
+        wxMenu menu;
+        menu.SetEventHandler(this);
+        menu.Append(ID_REVEAL, "Reveal");
+        menu.AppendSeparator();
+        menu.Append(wxID_EXIT, "Exit");
+        m_taskBarIcon->PopupMenu(&menu);
+    });
 }
 
 } // namespace another_day
