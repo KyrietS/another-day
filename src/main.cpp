@@ -1,8 +1,9 @@
 #define _CRT_SECURE_NO_WARNINGS
+#include "pch.hpp"
 
+#include "App.hpp"
 #include <iostream>
 #include <memory>
-#include "App.hpp"
 
 #pragma warning(push)
 #pragma warning(disable : 28251)

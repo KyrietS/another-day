@@ -3,11 +3,11 @@
 
 namespace another_day
 {
-	class App : public wxApp
-	{
-	public:
-		bool OnInit() override;
+class App : public wxApp
+{
+public:
+    bool OnInit() override;
 
-	private:
-	};
-}
+private:
+};
+} // namespace another_day

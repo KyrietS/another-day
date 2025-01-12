@@ -1,10 +1,10 @@
 #pragma once
 
-#include <wx/wxprec.h>
+#include <wx/config.h>
 #include <wx/dcbuffer.h>
 #include <wx/sound.h>
-#include <wx/config.h>
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-	#include <wx/wx.h>
+#include <wx/wx.h>
 #endif

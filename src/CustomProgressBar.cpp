@@ -1,3 +1,5 @@
+#include "pch.hpp"
+
 #include "CustomProgressBar.hpp"
 
 CustomProgressBar::CustomProgressBar(wxWindow* parent, wxWindowID id, int range, const wxPoint& pos, const wxSize& size)
@@ -9,8 +11,8 @@ CustomProgressBar::CustomProgressBar(wxWindow* parent, wxWindowID id, int range,
 
 void CustomProgressBar::SetRange(int range)
 {
-	m_range = range;
-	Refresh();
+    m_range = range;
+    Refresh();
 }
 
 void CustomProgressBar::SetValue(int value)
@@ -26,25 +28,25 @@ int CustomProgressBar::GetValue() const
 
 void CustomProgressBar::SetText(const wxString& text)
 {
-	m_text = text;
-	Refresh();
+    m_text = text;
+    Refresh();
 }
 
 wxString CustomProgressBar::GetText() const
 {
-	return m_text;
+    return m_text;
 }
 
 void CustomProgressBar::SetFilledColor(const wxBrush& brush)
 {
-	m_filledBrush = brush;
-	Refresh();
+    m_filledBrush = brush;
+    Refresh();
 }
 
 void CustomProgressBar::SetEmptyColor(const wxBrush& brush)
 {
-	m_emptyBrush = brush;
-	Refresh();
+    m_emptyBrush = brush;
+    Refresh();
 }
 
 void CustomProgressBar::SetTextColor(const wxColor& color)
@@ -55,7 +57,7 @@ void CustomProgressBar::SetTextColor(const wxColor& color)
 
 bool CustomProgressBar::IsFilled()
 {
-	return m_value >= m_range;
+    return m_value >= m_range;
 }
 
 void CustomProgressBar::OnPaint(wxPaintEvent& event)
@@ -67,17 +69,18 @@ void CustomProgressBar::OnPaint(wxPaintEvent& event)
     wxSize size = GetClientSize();
     dc.SetPen(*wxMEDIUM_GREY_PEN);
 
-	// Empty progress bar
-	dc.SetBrush(m_emptyBrush);
-	dc.DrawRectangle(0, 0, size.GetWidth(), size.GetHeight());
+    // Empty progress bar
+    dc.SetBrush(m_emptyBrush);
+    dc.DrawRectangle(0, 0, size.GetWidth(), size.GetHeight());
 
-	// Filled progress bar
+    // Filled progress bar
     dc.SetBrush(m_filledBrush);
     int width = (m_value * size.GetWidth()) / m_range;
-	width = std::max(0, std::min(size.GetWidth(), width));
+    width = std::max(0, std::min(size.GetWidth(), width));
     dc.DrawRectangle(0, 0, width, size.GetHeight());
 
-	// Text on top of progress bar
+    // Text on top of progress bar
     dc.SetTextForeground(m_textColor);
-    dc.DrawText(m_text, (size.GetWidth() - dc.GetTextExtent(m_text).GetWidth()) / 2, (size.GetHeight() - dc.GetTextExtent(m_text).GetHeight()) / 2);
+    dc.DrawText(m_text, (size.GetWidth() - dc.GetTextExtent(m_text).GetWidth()) / 2,
+                (size.GetHeight() - dc.GetTextExtent(m_text).GetHeight()) / 2);
 }
