@@ -230,7 +230,7 @@ void MainWindow::OnClose(wxCloseEvent& event)
 {
     if (event.CanVeto())
     {
-        if (wxMessageBox("Are you sure you want to quit?\nAll progress will be lost.", "Exit",
+        if (wxMessageBox("Are you sure you want to quit?\nAll progress will be lost.", "Exit another-day",
                          wxICON_WARNING | wxYES_NO) != wxYES)
         {
             event.Veto();
