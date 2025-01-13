@@ -16,6 +16,7 @@ private:
     wxTextCtrl* postponekDurationCtrl;
     wxCheckBox* useAudioNotificationCheckBox;
     wxCheckBox* useSystemNotificationCheckBox;
+    wxCheckBox* alwaysOnTopCheckBox;
     wxCheckBox* autoStartBreakCheckBox;
     wxCheckBox* autoStartSessionCheckBox;
 };
