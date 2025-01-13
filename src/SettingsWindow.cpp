@@ -1,4 +1,3 @@
-#pragma once
 #include "SettingsWindow.hpp"
 
 namespace another_day
@@ -44,7 +43,8 @@ SettingsWindow::SettingsWindow(wxWindow* parent)
             breakDurationCtrl->SetValue("5m");
             gridSizer->Add(breakDurationCtrl, 1, wxALL | wxEXPAND, 1);
 
-            gridSizer->Add(new wxStaticText(durationPanel, wxID_ANY, "Session:"), 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+            gridSizer->Add(new wxStaticText(durationPanel, wxID_ANY, "Session:"), 0, wxALL | wxALIGN_CENTER_VERTICAL,
+                           5);
             sessionDurationCtrl = new wxTextCtrl(durationPanel, wxID_ANY);
             sessionDurationCtrl->SetToolTip("Syntax: 7s, 7m, 7h");
             sessionDurationCtrl->SetValue("55m");
@@ -56,7 +56,8 @@ SettingsWindow::SettingsWindow(wxWindow* parent)
             workDurationCtrl->SetValue("8h");
             gridSizer->Add(workDurationCtrl, 1, wxALL | wxEXPAND, 1);
 
-            gridSizer->Add(new wxStaticText(durationPanel, wxID_ANY, "Postpone:"), 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+            gridSizer->Add(new wxStaticText(durationPanel, wxID_ANY, "Postpone:"), 0, wxALL | wxALIGN_CENTER_VERTICAL,
+                           5);
             postponekDurationCtrl = new wxTextCtrl(durationPanel, wxID_ANY);
             postponekDurationCtrl->SetToolTip("Syntax: 7s, 7m, 7h");
             gridSizer->Add(postponekDurationCtrl, 1, wxALL | wxEXPAND, 1);
