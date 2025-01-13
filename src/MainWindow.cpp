@@ -213,9 +213,8 @@ void MainWindow::OnRightMouseDown(wxMouseEvent& event)
     contextMenu.Append(wxID_ICONIZE_FRAME, wxT("Hide (minimize)"));
     contextMenu.AppendSeparator();
     {
-        wxMenuItem* settingsItem = new wxMenuItem(&contextMenu, wxID_PREFERENCES, wxT("Settings"));
+        wxMenuItem* settingsItem = contextMenu.Append(wxID_PREFERENCES, wxT("Settings"));
         settingsItem->Enable(false);
-        contextMenu.Append(settingsItem);
     }
     contextMenu.AppendSeparator();
     contextMenu.Append(wxID_EXIT, wxT("Exit"));
