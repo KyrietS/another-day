@@ -1,6 +1,7 @@
 #include "pch.hpp"
 
 #include "MainWindow.hpp"
+#include "SettingsWindow.hpp"
 
 namespace another_day
 {
@@ -58,6 +59,7 @@ MainWindow::MainWindow(const wxString& title)
     Bind(wxEVT_MENU, &MainWindow::OnHide, this, wxID_ICONIZE_FRAME);
     Bind(wxEVT_MENU, &MainWindow::OnStartBreak, this, ID_START_BREAK);
     Bind(wxEVT_MENU, &MainWindow::OnReveal, this, ID_REVEAL);
+    Bind(wxEVT_MENU, &MainWindow::OnOpenSettings, this, wxID_PREFERENCES);
     Bind(wxEVT_CLOSE_WINDOW, &MainWindow::OnClose, this);
 
     if (not notificationSound.Create(wxT("notification.wav")))
@@ -214,7 +216,7 @@ void MainWindow::OnRightMouseDown(wxMouseEvent& event)
     contextMenu.AppendSeparator();
     {
         wxMenuItem* settingsItem = contextMenu.Append(wxID_PREFERENCES, wxT("Settings"));
-        settingsItem->Enable(false);
+        settingsItem->Enable(true);
     }
     contextMenu.AppendSeparator();
     contextMenu.Append(wxID_EXIT, wxT("Exit"));
@@ -304,6 +306,12 @@ void MainWindow::CreateTrayIcon()
         menu.Append(wxID_EXIT, "Exit");
         m_taskBarIcon->PopupMenu(&menu);
     });
+}
+
+void MainWindow::OnOpenSettings(wxCommandEvent& event)
+{
+    SettingsWindow settingsWindow(this);
+    settingsWindow.ShowModal();
 }
 
 } // namespace another_day

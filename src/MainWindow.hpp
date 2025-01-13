@@ -58,6 +58,7 @@ private:
     void OnReveal(const wxCommandEvent& event);
     void OnResetSession(const wxCommandEvent& event);
     void OnStartBreak(wxCommandEvent& event);
+    void OnOpenSettings(wxCommandEvent& event);
 
     enum Events
     {
