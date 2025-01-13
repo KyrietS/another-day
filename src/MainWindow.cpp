@@ -212,6 +212,12 @@ void MainWindow::OnRightMouseDown(wxMouseEvent& event)
         contextMenu.Append(ID_HIDE_TO_TRAY, wxT("Hide (tray)"));
     contextMenu.Append(wxID_ICONIZE_FRAME, wxT("Hide (minimize)"));
     contextMenu.AppendSeparator();
+    {
+        wxMenuItem* settingsItem = new wxMenuItem(&contextMenu, wxID_PREFERENCES, wxT("Settings"));
+        settingsItem->Enable(false);
+        contextMenu.Append(settingsItem);
+    }
+    contextMenu.AppendSeparator();
     contextMenu.Append(wxID_EXIT, wxT("Exit"));
     PopupMenu(&contextMenu, positionInWindow);
 }
