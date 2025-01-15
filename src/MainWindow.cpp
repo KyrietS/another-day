@@ -2,6 +2,7 @@
 
 #include "MainWindow.hpp"
 #include "SettingsWindow.hpp"
+#include <cassert>
 
 namespace another_day
 {
@@ -61,6 +62,9 @@ MainWindow::MainWindow(const wxString& title)
     Bind(wxEVT_MENU, &MainWindow::OnReveal, this, ID_REVEAL);
     Bind(wxEVT_MENU, &MainWindow::OnOpenSettings, this, wxID_PREFERENCES);
     Bind(wxEVT_CLOSE_WINDOW, &MainWindow::OnClose, this);
+    Bind(wxEVT_MENU, &MainWindow::OnDebugFinishSession, this, ID_DEBUG_FINISH_SESSION);
+    Bind(wxEVT_MENU, &MainWindow::OnDebugFinishBreak, this, ID_DEBUG_FINISH_BREAK);
+    Bind(wxEVT_MENU, &MainWindow::OnDebugFinishWork, this, ID_DEBUG_FINISH_WORK);
 
     if (not notificationSound.Create(wxT("notification.wav")))
     {
@@ -192,6 +196,35 @@ void MainWindow::OnTimer(wxTimerEvent& event)
     UpdateBars();
 }
 
+void MainWindow::AddDebugOptions(wxMenu& contextMenu)
+{
+    contextMenu.AppendSeparator();
+    contextMenu.Append(ID_DEBUG_FINISH_SESSION, "[DEBUG] Finish session");
+    contextMenu.Append(ID_DEBUG_FINISH_BREAK, "[DEBUG] Finish break");
+    contextMenu.Append(ID_DEBUG_FINISH_WORK, "[DEBUG] Finish work");
+}
+
+void MainWindow::OnDebugFinishSession(wxCommandEvent& event)
+{
+    auto now = std::chrono::steady_clock::now();
+    auto newSessionStart = now - sessionDuration + std::chrono::seconds{3};
+    sessionStartTime = newSessionStart;
+}
+
+void MainWindow::OnDebugFinishBreak(wxCommandEvent& event)
+{
+    auto now = std::chrono::steady_clock::now();
+    auto newBreakStart = now - breakDuration + std::chrono::seconds{3};
+    breakStartTime = newBreakStart;
+}
+
+void MainWindow::OnDebugFinishWork(wxCommandEvent& event)
+{
+    auto now = std::chrono::steady_clock::now();
+    auto newWorkStart = now - workDuration + std::chrono::seconds{3};
+    workStartTime = newWorkStart;
+}
+
 void MainWindow::OnRightMouseDown(wxMouseEvent& event)
 {
     wxPoint positionInWindow = this->ScreenToClient(wxGetMousePosition());
@@ -209,6 +242,9 @@ void MainWindow::OnRightMouseDown(wxMouseEvent& event)
 #endif
 
     contextMenu.Append(ID_RESET_SESSION, wxT("Start session"));
+#ifndef NDEBUG
+    AddDebugOptions(contextMenu);
+#endif
     contextMenu.AppendSeparator();
     if (wxTaskBarIcon::IsAvailable())
         contextMenu.Append(ID_HIDE_TO_TRAY, wxT("Hide (tray)"));

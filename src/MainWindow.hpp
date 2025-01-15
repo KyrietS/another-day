@@ -60,12 +60,22 @@ private:
     void OnStartBreak(wxCommandEvent& event);
     void OnOpenSettings(wxCommandEvent& event);
 
+    // --- DEBUG ---
+    void AddDebugOptions(wxMenu&);
+    void OnDebugFinishSession(wxCommandEvent& event);
+    void OnDebugFinishBreak(wxCommandEvent& event);
+    void OnDebugFinishWork(wxCommandEvent& event);
+
     enum Events
     {
         ID_RESET_SESSION = wxID_HIGHEST + 1,
         ID_START_BREAK,
         ID_HIDE_TO_TRAY,
-        ID_REVEAL
+        ID_REVEAL,
+
+        ID_DEBUG_FINISH_SESSION,
+        ID_DEBUG_FINISH_BREAK,
+        ID_DEBUG_FINISH_WORK
     };
 };
 
