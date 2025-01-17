@@ -1,9 +1,11 @@
+#include "pch.hpp"
+
 #include "SettingsWindow.hpp"
 
 namespace another_day
 {
-SettingsWindow::SettingsWindow(wxWindow* parent)
-    : wxDialog(parent, wxID_ANY, "Settings", wxDefaultPosition, wxDefaultSize)
+SettingsWindow::SettingsWindow(wxWindow* parent, Settings& settings)
+    : wxDialog(parent, wxID_ANY, "Settings", wxDefaultPosition, wxDefaultSize), settings(settings)
 {
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
@@ -13,7 +15,7 @@ SettingsWindow::SettingsWindow(wxWindow* parent)
     wxBoxSizer* generalSizer = new wxBoxSizer(wxVERTICAL);
     {
         alwaysOnTopCheckBox = new wxCheckBox(generalPanel, wxID_ANY, "Always on top");
-        alwaysOnTopCheckBox->SetValue(true);
+        alwaysOnTopCheckBox->SetValidator(wxGenericValidator(&settings.alwaysOnTop));
         alwaysOnTopCheckBox->SetToolTip("Keep the window on top of other windows");
         generalSizer->Add(alwaysOnTopCheckBox, 0, wxALL, 5);
 
@@ -101,9 +103,9 @@ SettingsWindow::SettingsWindow(wxWindow* parent)
 
     wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
     {
-        auto applyButton = new wxButton(this, wxID_APPLY, "Apply");
+        // wxWidgets will automatically bind these events and handle the dialog closing
+        auto applyButton = new wxButton(this, wxID_OK, "Apply");
         auto cancelButton = new wxButton(this, wxID_CANCEL, "Cancel");
-        applyButton->Enable(false);
 
         buttonSizer->Add(applyButton, 0, wxALL, 5);
         buttonSizer->Add(cancelButton, 0, wxALL, 5);
@@ -113,4 +115,15 @@ SettingsWindow::SettingsWindow(wxWindow* parent)
 
     SetSizerAndFit(mainSizer);
 }
+
+void SettingsWindow::EndModal(int code)
+{
+    if (code == wxID_OK and Validate())
+    {
+        settings.SaveToConfig(*wxConfig::Get());
+    }
+
+    wxDialog::EndModal(code);
+}
+
 } // namespace another_day

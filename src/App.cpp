@@ -21,7 +21,9 @@ bool App::OnInit()
     SetAppName("another-day");
     wxConfig::Get()->SetRecordDefaults(true);
 
-    MainWindow* window = new MainWindow("");
+    settings = std::make_unique<Settings>(*wxConfig::Get());
+
+    MainWindow* window = new MainWindow(*settings);
     window->Show(true);
     return true;
 }

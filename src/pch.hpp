@@ -5,6 +5,7 @@
 #include <wx/notebook.h>
 #include <wx/sound.h>
 #include <wx/taskbar.h>
+#include <wx/valgen.h>
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP

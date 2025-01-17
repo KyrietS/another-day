@@ -2,6 +2,8 @@
 #include "CustomProgressBar.hpp"
 #include <chrono>
 #include <optional>
+#include "Duration.hpp"
+#include "Settings.hpp"
 
 namespace another_day
 {
@@ -9,16 +11,15 @@ constexpr auto FRAME_STYLE = wxSTAY_ON_TOP;
 // constexpr auto FRAME_STYLE = wxFRAME_TOOL_WINDOW | wxSTAY_ON_TOP;
 //  constexpr auto FRAME_STYLE = wxDEFAULT_FRAME_STYLE;
 
-using Duration =
-    std::common_type<std::chrono::seconds, std::common_type<std::chrono::minutes, std::chrono::hours>::type>::type;
-
 class MainWindow : public wxFrame
 {
 public:
-    MainWindow(const wxString& title);
+    MainWindow(Settings&);
     ~MainWindow();
 
 private:
+    Settings& settings;
+
     bool m_dragging = false;
     wxPoint m_dragStartOffset;
     CustomProgressBar* m_progressBarSession;
@@ -26,16 +27,16 @@ private:
     wxStaticBitmap* iconTea;
     wxStaticBitmap* iconDoor;
     wxTimer* timer;
-    Duration breakDuration{std::chrono::seconds{wxConfig::Get()->Read("BreakDuration", 10)}};
-    Duration sessionDuration{std::chrono::seconds{wxConfig::Get()->Read("SessionDuration", 5)}};
-    Duration workDuration{std::chrono::hours{wxConfig::Get()->Read("WorkDuration", 8)}};
+    Duration breakDuration{std::chrono::seconds{wxConfig::Get()->ReadLongLong("BreakDuration", 10)}};
+    Duration sessionDuration{std::chrono::seconds{wxConfig::Get()->ReadLongLong("SessionDuration", 5)}};
+    Duration workDuration{std::chrono::seconds{wxConfig::Get()->ReadLongLong("WorkDuration", 8)}};
     std::chrono::steady_clock::time_point breakStartTime;
     std::chrono::steady_clock::time_point sessionStartTime;
     std::chrono::steady_clock::time_point workStartTime;
     bool breakInProgress = false;
 
     std::optional<std::chrono::steady_clock::time_point> lastNotificationTime;
-    Duration notificationInterval{std::chrono::seconds{wxConfig::Get()->Read("NotificationInterval", 60)}};
+    Duration notificationInterval{std::chrono::seconds{wxConfig::Get()->ReadLongLong("NotificationInterval", 60)}};
     wxSound notificationSound;
 
     std::unique_ptr<wxTaskBarIcon> m_taskBarIcon;

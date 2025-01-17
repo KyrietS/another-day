@@ -1,15 +1,19 @@
 #pragma once
 
 #include <wx/wx.h>
+#include "Settings.hpp"
 
 namespace another_day
 {
 class SettingsWindow : public wxDialog
 {
 public:
-    SettingsWindow(wxWindow* parent);
+    SettingsWindow(wxWindow* parent, Settings& settings);
+    void EndModal(int code) override;
 
 private:
+    Settings& settings;
+
     wxTextCtrl* breakDurationCtrl;
     wxTextCtrl* sessionDurationCtrl;
     wxTextCtrl* workDurationCtrl;

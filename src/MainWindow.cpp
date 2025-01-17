@@ -6,8 +6,8 @@
 
 namespace another_day
 {
-MainWindow::MainWindow(const wxString& title)
-    : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, FRAME_STYLE)
+MainWindow::MainWindow(Settings& settings)
+    : wxFrame(nullptr, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, FRAME_STYLE), settings(settings)
 {
     this->SetBackgroundColour(*wxWHITE);
 
@@ -346,7 +346,7 @@ void MainWindow::CreateTrayIcon()
 
 void MainWindow::OnOpenSettings(wxCommandEvent& event)
 {
-    SettingsWindow settingsWindow(this);
+    SettingsWindow settingsWindow(this, settings);
     settingsWindow.ShowModal();
 }
 
