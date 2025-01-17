@@ -15,7 +15,6 @@ class MainWindow : public wxFrame
 {
 public:
     MainWindow(Settings&);
-    ~MainWindow();
 
 private:
     Settings& settings;
@@ -26,7 +25,7 @@ private:
     CustomProgressBar* m_progressBarWork;
     wxStaticBitmap* iconTea;
     wxStaticBitmap* iconDoor;
-    wxTimer* timer;
+    std::unique_ptr<wxTimer> timer;
     Duration breakDuration{std::chrono::seconds{wxConfig::Get()->ReadLongLong("BreakDuration", 10)}};
     Duration sessionDuration{std::chrono::seconds{wxConfig::Get()->ReadLongLong("SessionDuration", 5)}};
     Duration workDuration{std::chrono::seconds{wxConfig::Get()->ReadLongLong("WorkDuration", 8)}};
