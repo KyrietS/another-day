@@ -1,9 +1,9 @@
 #pragma once
 #include "CustomProgressBar.hpp"
-#include <chrono>
-#include <optional>
 #include "Duration.hpp"
 #include "Settings.hpp"
+#include <chrono>
+#include <optional>
 
 namespace another_day
 {

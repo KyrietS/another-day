@@ -1,7 +1,7 @@
 #pragma once
 
-#include <wx/wx.h>
 #include "Settings.hpp"
+#include <wx/wx.h>
 
 namespace another_day
 {
