@@ -74,7 +74,6 @@ MainWindow::MainWindow(Settings& settings)
     sessionStartTime = std::chrono::steady_clock::now();
     workStartTime = std::chrono::steady_clock::now();
 
-
     UpdateBars();
 }
 

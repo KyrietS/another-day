@@ -1,7 +1,7 @@
 #include "pch.hpp"
 
-#include "SettingsWindow.hpp"
 #include "DurationValidator.hpp"
+#include "SettingsWindow.hpp"
 
 namespace another_day
 {

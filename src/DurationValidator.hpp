@@ -24,4 +24,4 @@ public:
     wxString durationString;
     Duration& duration;
 };
-}
+} // namespace another_day
