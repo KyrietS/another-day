@@ -21,10 +21,10 @@ another-day is your personal working time guardian. It is an easy to use desktop
 
 ## Building
 ```
-git clone git@github.com:KyrietS/Minutea.git
-cd Minutea
+git clone git@github.com:KyrietS/another-day.git
+cd another-day
 cmake -S . -B build
-cmake --build build --target Minutea
+cmake --build build --target another-day
 ```
 
 ## License
