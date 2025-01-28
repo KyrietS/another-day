@@ -10,6 +10,8 @@ struct Settings
     Settings(const wxConfigBase& config);
     void SaveToConfig(wxConfigBase& config);
 
+    long GetFrameStyle();
+
     // General
     bool alwaysOnTop = false;
     bool autoStartBreak = false;

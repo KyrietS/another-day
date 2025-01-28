@@ -7,7 +7,7 @@
 namespace another_day
 {
 MainWindow::MainWindow(Settings& settings)
-    : wxFrame(nullptr, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, FRAME_STYLE), settings(settings)
+    : wxFrame(nullptr, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, settings.GetFrameStyle()), settings(settings)
 {
     this->SetBackgroundColour(*wxWHITE);
 
@@ -345,6 +345,7 @@ void MainWindow::OnOpenSettings(wxCommandEvent& event)
     if (status == wxID_OK)
     {
         UpdateBars();
+        SetWindowStyle(settings.GetFrameStyle());
     }
 }
 

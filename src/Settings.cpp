@@ -36,4 +36,9 @@ void Settings::SaveToConfig(wxConfigBase& config)
     config.Write("NotificationInterval", notificationInterval.count());
     config.Flush();
 }
+
+long Settings::GetFrameStyle()
+{
+    return alwaysOnTop ? wxSTAY_ON_TOP : 0x00;
+}
 } // namespace another_day
