@@ -32,7 +32,6 @@ private:
     bool breakInProgress = false;
 
     std::optional<std::chrono::steady_clock::time_point> lastNotificationTime;
-    Duration notificationInterval{std::chrono::seconds{wxConfig::Get()->ReadLongLong("NotificationInterval", 60)}};
     wxSound notificationSound;
 
     std::unique_ptr<wxTaskBarIcon> m_taskBarIcon;

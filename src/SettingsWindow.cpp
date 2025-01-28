@@ -80,7 +80,7 @@ SettingsWindow::SettingsWindow(wxWindow* parent, Settings& settings)
         notificationSizer->Add(useAudioNotificationCheckBox, 0, wxALL, 5);
 
         useSystemNotificationCheckBox = new wxCheckBox(notificationPanel, wxID_ANY, "System notification");
-        useSystemNotificationCheckBox->SetValue(false);
+        useSystemNotificationCheckBox->SetValidator(wxGenericValidator(&settings.useSystemNotification));
         useSystemNotificationCheckBox->SetToolTip("Show a system notification when the break or session ends");
         useSystemNotificationCheckBox->Enable(false);
         notificationSizer->Add(useSystemNotificationCheckBox, 0, wxALL, 5);
@@ -92,8 +92,8 @@ SettingsWindow::SettingsWindow(wxWindow* parent, Settings& settings)
             gridSizer->Add(new wxStaticText(notificationPanel, wxID_ANY, "Notification interval:"), 0,
                            wxALL | wxALIGN_CENTER_VERTICAL, 5);
             wxTextCtrl* notificationIntervalCtrl = new wxTextCtrl(notificationPanel, wxID_ANY);
+            notificationIntervalCtrl->SetValidator(DurationValidator(settings.notificationInterval));
             notificationIntervalCtrl->SetToolTip("Number of second");
-            notificationIntervalCtrl->SetValue("60");
             gridSizer->Add(notificationIntervalCtrl, 1, wxALL | wxEXPAND, 1);
         }
         notificationSizer->Add(gridSizer, 1, wxEXPAND | wxALL, 5);

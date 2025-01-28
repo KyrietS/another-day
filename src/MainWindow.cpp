@@ -177,7 +177,7 @@ void MainWindow::UpdateBars()
 void MainWindow::PlayNotificationSound()
 {
     if (not lastNotificationTime.has_value() or
-        std::chrono::steady_clock::now() - lastNotificationTime.value() > notificationInterval)
+        std::chrono::steady_clock::now() - lastNotificationTime.value() > settings.notificationInterval)
     {
         if (settings.useAudioNotification)
             notificationSound.Play();

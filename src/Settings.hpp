@@ -23,7 +23,7 @@ struct Settings
 
     // Notification
     bool useAudioNotification = true;
-    bool useSystemNotification = true;
+    bool useSystemNotification = false;
     Duration notificationInterval = std::chrono::seconds{60};
 };
 } // namespace another_day
