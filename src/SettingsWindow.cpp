@@ -108,6 +108,7 @@ SettingsWindow::SettingsWindow(wxWindow* parent, Settings& settings)
         // wxWidgets will automatically bind these events and handle the dialog closing
         auto applyButton = new wxButton(this, wxID_OK, "Apply");
         auto cancelButton = new wxButton(this, wxID_CANCEL, "Cancel");
+        applyButton->SetDefault();
 
         buttonSizer->Add(applyButton, 0, wxALL, 5);
         buttonSizer->Add(cancelButton, 0, wxALL, 5);
