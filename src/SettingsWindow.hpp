@@ -17,7 +17,7 @@ private:
     wxTextCtrl* breakDurationCtrl;
     wxTextCtrl* sessionDurationCtrl;
     wxTextCtrl* workDurationCtrl;
-    wxTextCtrl* postponekDurationCtrl;
+    wxTextCtrl* postponeDurationCtrl;
     wxCheckBox* useAudioNotificationCheckBox;
     wxCheckBox* useSystemNotificationCheckBox;
     wxCheckBox* alwaysOnTopCheckBox;

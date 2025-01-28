@@ -1,6 +1,7 @@
 #include "pch.hpp"
 
 #include "SettingsWindow.hpp"
+#include "DurationValidator.hpp"
 
 namespace another_day
 {
@@ -41,28 +42,29 @@ SettingsWindow::SettingsWindow(wxWindow* parent, Settings& settings)
 
             gridSizer->Add(new wxStaticText(durationPanel, wxID_ANY, "Break:"), 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
             breakDurationCtrl = new wxTextCtrl(durationPanel, wxID_ANY);
+            breakDurationCtrl->SetValidator(DurationValidator(settings.breakDuration));
             breakDurationCtrl->SetToolTip("Number of seconds");
-            breakDurationCtrl->SetValue("300");
             gridSizer->Add(breakDurationCtrl, 1, wxALL | wxEXPAND, 1);
 
             gridSizer->Add(new wxStaticText(durationPanel, wxID_ANY, "Session:"), 0, wxALL | wxALIGN_CENTER_VERTICAL,
                            5);
             sessionDurationCtrl = new wxTextCtrl(durationPanel, wxID_ANY);
+            sessionDurationCtrl->SetValidator(DurationValidator(settings.sessionDuration));
             sessionDurationCtrl->SetToolTip("Number of seconds");
-            sessionDurationCtrl->SetValue("3300");
             gridSizer->Add(sessionDurationCtrl, 1, wxALL | wxEXPAND, 1);
 
             gridSizer->Add(new wxStaticText(durationPanel, wxID_ANY, "Work:"), 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
             workDurationCtrl = new wxTextCtrl(durationPanel, wxID_ANY);
+            workDurationCtrl->SetValidator(DurationValidator(settings.workDuration));
             workDurationCtrl->SetToolTip("Number of seconds");
-            workDurationCtrl->SetValue("28800");
             gridSizer->Add(workDurationCtrl, 1, wxALL | wxEXPAND, 1);
 
             gridSizer->Add(new wxStaticText(durationPanel, wxID_ANY, "Postpone:"), 0, wxALL | wxALIGN_CENTER_VERTICAL,
                            5);
-            postponekDurationCtrl = new wxTextCtrl(durationPanel, wxID_ANY);
-            postponekDurationCtrl->SetToolTip("Number of second");
-            gridSizer->Add(postponekDurationCtrl, 1, wxALL | wxEXPAND, 1);
+            postponeDurationCtrl = new wxTextCtrl(durationPanel, wxID_ANY);
+            postponeDurationCtrl->SetValidator(DurationValidator(settings.postponeDuration));
+            postponeDurationCtrl->SetToolTip("Number of second");
+            gridSizer->Add(postponeDurationCtrl, 1, wxALL | wxEXPAND, 1);
         }
         durationSizer->Add(gridSizer, 1, wxEXPAND | wxALL, 5);
     }

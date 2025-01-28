@@ -74,8 +74,6 @@ MainWindow::MainWindow(Settings& settings)
     sessionStartTime = std::chrono::steady_clock::now();
     workStartTime = std::chrono::steady_clock::now();
 
-    m_progressBarSession->SetRange(std::chrono::duration_cast<std::chrono::seconds>(sessionDuration).count());
-    m_progressBarWork->SetRange(std::chrono::duration_cast<std::chrono::seconds>(workDuration).count());
 
     UpdateBars();
 }
@@ -117,9 +115,11 @@ void MainWindow::OnMouseMove(wxMouseEvent& event)
     }
 }
 
-static void SetProgressBarValue(CustomProgressBar* progressBar, std::chrono::steady_clock::time_point startPoint)
+static void SetProgressBarValue(CustomProgressBar* progressBar, std::chrono::steady_clock::time_point startPoint,
+                                Duration duration)
 {
     auto timePassed = std::chrono::steady_clock::now() - startPoint;
+    progressBar->SetRange(std::chrono::duration_cast<std::chrono::seconds>(duration).count());
     progressBar->SetValue(std::chrono::duration_cast<std::chrono::seconds>(timePassed).count());
 }
 
@@ -147,8 +147,8 @@ void MainWindow::UpdateBars()
 {
     if (not breakInProgress)
     {
-        SetProgressBarText(m_progressBarSession, sessionStartTime, sessionDuration);
-        SetProgressBarValue(m_progressBarSession, sessionStartTime);
+        SetProgressBarText(m_progressBarSession, sessionStartTime, settings.sessionDuration);
+        SetProgressBarValue(m_progressBarSession, sessionStartTime, settings.sessionDuration);
 
         if (m_progressBarSession->IsFilled()) // session is over
         {
@@ -158,8 +158,8 @@ void MainWindow::UpdateBars()
     }
     else // break in progress
     {
-        SetProgressBarText(m_progressBarSession, breakStartTime, breakDuration);
-        SetProgressBarValue(m_progressBarSession, breakStartTime);
+        SetProgressBarText(m_progressBarSession, breakStartTime, settings.breakDuration);
+        SetProgressBarValue(m_progressBarSession, breakStartTime, settings.breakDuration);
 
         if (m_progressBarSession->IsFilled()) // break is over
         {
@@ -168,8 +168,8 @@ void MainWindow::UpdateBars()
         }
     }
 
-    SetProgressBarText(m_progressBarWork, workStartTime, workDuration);
-    SetProgressBarValue(m_progressBarWork, workStartTime);
+    SetProgressBarText(m_progressBarWork, workStartTime, settings.workDuration);
+    SetProgressBarValue(m_progressBarWork, workStartTime, settings.workDuration);
 
     if (m_progressBarWork->IsFilled())
         m_progressBarWork->SetFilledColor(*wxRED_BRUSH);
@@ -202,21 +202,21 @@ void MainWindow::AddDebugOptions(wxMenu& contextMenu)
 void MainWindow::OnDebugFinishSession(wxCommandEvent& event)
 {
     auto now = std::chrono::steady_clock::now();
-    auto newSessionStart = now - sessionDuration + std::chrono::seconds{3};
+    auto newSessionStart = now - settings.sessionDuration + std::chrono::seconds{3};
     sessionStartTime = newSessionStart;
 }
 
 void MainWindow::OnDebugFinishBreak(wxCommandEvent& event)
 {
     auto now = std::chrono::steady_clock::now();
-    auto newBreakStart = now - breakDuration + std::chrono::seconds{3};
+    auto newBreakStart = now - settings.breakDuration + std::chrono::seconds{3};
     breakStartTime = newBreakStart;
 }
 
 void MainWindow::OnDebugFinishWork(wxCommandEvent& event)
 {
     auto now = std::chrono::steady_clock::now();
-    auto newWorkStart = now - workDuration + std::chrono::seconds{3};
+    auto newWorkStart = now - settings.workDuration + std::chrono::seconds{3};
     workStartTime = newWorkStart;
 }
 
@@ -294,7 +294,6 @@ void MainWindow::OnStartBreak(wxCommandEvent& event)
     breakInProgress = true;
     breakStartTime = std::chrono::steady_clock::now();
     m_progressBarSession->SetFilledColor(wxBrush(wxColor("#00A5FF")));
-    m_progressBarSession->SetRange(std::chrono::duration_cast<std::chrono::seconds>(breakDuration).count());
     lastNotificationTime.reset();
 
     UpdateBars();
@@ -305,7 +304,6 @@ void MainWindow::OnResetSession(const wxCommandEvent& event)
     breakInProgress = false;
     sessionStartTime = std::chrono::steady_clock::now();
     m_progressBarSession->SetFilledColor(*wxGREEN_BRUSH);
-    m_progressBarSession->SetRange(std::chrono::duration_cast<std::chrono::seconds>(sessionDuration).count());
     lastNotificationTime.reset();
 
     UpdateBars();
@@ -342,7 +340,11 @@ void MainWindow::CreateTrayIcon()
 void MainWindow::OnOpenSettings(wxCommandEvent& event)
 {
     SettingsWindow settingsWindow(this, settings);
-    settingsWindow.ShowModal();
+    int status = settingsWindow.ShowModal();
+    if (status == wxID_OK)
+    {
+        UpdateBars();
+    }
 }
 
 } // namespace another_day

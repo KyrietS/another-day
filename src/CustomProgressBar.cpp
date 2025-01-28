@@ -13,6 +13,9 @@ CustomProgressBar::CustomProgressBar(wxWindow* parent, wxWindowID id, int range,
 
 void CustomProgressBar::SetRange(int range)
 {
+    if (m_range == range)
+        return;
+
     m_range = range;
     Refresh();
 }

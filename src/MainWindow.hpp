@@ -26,9 +26,6 @@ private:
     wxStaticBitmap* iconTea;
     wxStaticBitmap* iconDoor;
     std::unique_ptr<wxTimer> timer;
-    Duration breakDuration{std::chrono::seconds{wxConfig::Get()->ReadLongLong("BreakDuration", 10)}};
-    Duration sessionDuration{std::chrono::seconds{wxConfig::Get()->ReadLongLong("SessionDuration", 5)}};
-    Duration workDuration{std::chrono::seconds{wxConfig::Get()->ReadLongLong("WorkDuration", 8)}};
     std::chrono::steady_clock::time_point breakStartTime;
     std::chrono::steady_clock::time_point sessionStartTime;
     std::chrono::steady_clock::time_point workStartTime;
