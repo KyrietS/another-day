@@ -17,7 +17,7 @@ another-day is your personal working time guardian. It is an easy to use desktop
 - ✅ Neat and clean GUI
 - ✅ Supports Windows and Linux
 - ✅ Tray support
-- 🔜 Customizable settings
+- ✅ Customizable settings
 
 ## Building
 ```
