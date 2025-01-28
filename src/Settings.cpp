@@ -34,5 +34,6 @@ void Settings::SaveToConfig(wxConfigBase& config)
     config.Write("UseAudioNotification", useAudioNotification);
     config.Write("UseSystemNotification", useSystemNotification);
     config.Write("NotificationInterval", notificationInterval.count());
+    config.Flush();
 }
 } // namespace another_day
