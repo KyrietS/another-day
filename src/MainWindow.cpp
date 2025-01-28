@@ -153,6 +153,10 @@ void MainWindow::UpdateBars()
         {
             PlayNotificationSound();
             m_progressBarSession->SetFilledColor(*wxRED_BRUSH);
+            if (settings.autoStartBreak)
+            {
+                OnStartBreak(wxCommandEvent{});
+            }
         }
     }
     else // break in progress
@@ -163,7 +167,10 @@ void MainWindow::UpdateBars()
         if (m_progressBarSession->IsFilled()) // break is over
         {
             PlayNotificationSound();
-            OnResetSession(wxCommandEvent{});
+            if (settings.autoStartSession)
+            {
+                OnResetSession(wxCommandEvent{});
+            }
         }
     }
 
@@ -290,7 +297,7 @@ void MainWindow::OnReveal(const wxCommandEvent& event)
     Restore();
 }
 
-void MainWindow::OnStartBreak(wxCommandEvent& event)
+void MainWindow::OnStartBreak(const wxCommandEvent& event)
 {
     breakInProgress = true;
     breakStartTime = std::chrono::steady_clock::now();
