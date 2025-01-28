@@ -20,12 +20,12 @@ SettingsWindow::SettingsWindow(wxWindow* parent, Settings& settings)
         generalSizer->Add(alwaysOnTopCheckBox, 0, wxALL, 5);
 
         autoStartBreakCheckBox = new wxCheckBox(generalPanel, wxID_ANY, "Auto-start break");
-        autoStartBreakCheckBox->SetValue(false);
+        autoStartBreakCheckBox->SetValidator(wxGenericValidator(&settings.autoStartBreak));
         autoStartBreakCheckBox->SetToolTip("Start the break automatically when the session ends");
         generalSizer->Add(autoStartBreakCheckBox, 0, wxALL, 5);
 
         autoStartSessionCheckBox = new wxCheckBox(generalPanel, wxID_ANY, "Auto-start session");
-        autoStartSessionCheckBox->SetValue(true);
+        autoStartSessionCheckBox->SetValidator(wxGenericValidator(&settings.autoStartSession));
         autoStartSessionCheckBox->SetToolTip("Start the session automatically when the break ends");
         generalSizer->Add(autoStartSessionCheckBox, 0, wxALL, 5);
     }
