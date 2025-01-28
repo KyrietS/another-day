@@ -41,27 +41,27 @@ SettingsWindow::SettingsWindow(wxWindow* parent, Settings& settings)
 
             gridSizer->Add(new wxStaticText(durationPanel, wxID_ANY, "Break:"), 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
             breakDurationCtrl = new wxTextCtrl(durationPanel, wxID_ANY);
-            breakDurationCtrl->SetToolTip("Syntax: 7s, 7m, 7h");
-            breakDurationCtrl->SetValue("5m");
+            breakDurationCtrl->SetToolTip("Number of seconds");
+            breakDurationCtrl->SetValue("300");
             gridSizer->Add(breakDurationCtrl, 1, wxALL | wxEXPAND, 1);
 
             gridSizer->Add(new wxStaticText(durationPanel, wxID_ANY, "Session:"), 0, wxALL | wxALIGN_CENTER_VERTICAL,
                            5);
             sessionDurationCtrl = new wxTextCtrl(durationPanel, wxID_ANY);
-            sessionDurationCtrl->SetToolTip("Syntax: 7s, 7m, 7h");
-            sessionDurationCtrl->SetValue("55m");
+            sessionDurationCtrl->SetToolTip("Number of seconds");
+            sessionDurationCtrl->SetValue("3300");
             gridSizer->Add(sessionDurationCtrl, 1, wxALL | wxEXPAND, 1);
 
             gridSizer->Add(new wxStaticText(durationPanel, wxID_ANY, "Work:"), 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
             workDurationCtrl = new wxTextCtrl(durationPanel, wxID_ANY);
-            workDurationCtrl->SetToolTip("Syntax: 7s, 7m, 7h");
-            workDurationCtrl->SetValue("8h");
+            workDurationCtrl->SetToolTip("Number of seconds");
+            workDurationCtrl->SetValue("28800");
             gridSizer->Add(workDurationCtrl, 1, wxALL | wxEXPAND, 1);
 
             gridSizer->Add(new wxStaticText(durationPanel, wxID_ANY, "Postpone:"), 0, wxALL | wxALIGN_CENTER_VERTICAL,
                            5);
             postponekDurationCtrl = new wxTextCtrl(durationPanel, wxID_ANY);
-            postponekDurationCtrl->SetToolTip("Syntax: 7s, 7m, 7h");
+            postponekDurationCtrl->SetToolTip("Number of second");
             gridSizer->Add(postponekDurationCtrl, 1, wxALL | wxEXPAND, 1);
         }
         durationSizer->Add(gridSizer, 1, wxEXPAND | wxALL, 5);
@@ -90,8 +90,8 @@ SettingsWindow::SettingsWindow(wxWindow* parent, Settings& settings)
             gridSizer->Add(new wxStaticText(notificationPanel, wxID_ANY, "Notification interval:"), 0,
                            wxALL | wxALIGN_CENTER_VERTICAL, 5);
             wxTextCtrl* notificationIntervalCtrl = new wxTextCtrl(notificationPanel, wxID_ANY);
-            notificationIntervalCtrl->SetToolTip("Syntax: 7s, 7m, 7h");
-            notificationIntervalCtrl->SetValue("60s");
+            notificationIntervalCtrl->SetToolTip("Number of second");
+            notificationIntervalCtrl->SetValue("60");
             gridSizer->Add(notificationIntervalCtrl, 1, wxALL | wxEXPAND, 1);
         }
         notificationSizer->Add(gridSizer, 1, wxEXPAND | wxALL, 5);
