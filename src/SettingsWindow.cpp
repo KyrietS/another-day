@@ -64,6 +64,7 @@ SettingsWindow::SettingsWindow(wxWindow* parent, Settings& settings)
             postponeDurationCtrl = new wxTextCtrl(durationPanel, wxID_ANY);
             postponeDurationCtrl->SetValidator(DurationValidator(settings.postponeDuration));
             postponeDurationCtrl->SetToolTip("Number of second");
+            postponeDurationCtrl->Enable(false);
             gridSizer->Add(postponeDurationCtrl, 1, wxALL | wxEXPAND, 1);
         }
         durationSizer->Add(gridSizer, 1, wxEXPAND | wxALL, 5);
