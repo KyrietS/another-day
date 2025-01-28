@@ -75,7 +75,7 @@ SettingsWindow::SettingsWindow(wxWindow* parent, Settings& settings)
     wxBoxSizer* notificationSizer = new wxBoxSizer(wxVERTICAL);
     {
         useAudioNotificationCheckBox = new wxCheckBox(notificationPanel, wxID_ANY, "Audio notification");
-        useAudioNotificationCheckBox->SetValue(true);
+        useAudioNotificationCheckBox->SetValidator(wxGenericValidator(&settings.useAudioNotification));
         useAudioNotificationCheckBox->SetToolTip("Play a sound when the break or session ends");
         notificationSizer->Add(useAudioNotificationCheckBox, 0, wxALL, 5);
 

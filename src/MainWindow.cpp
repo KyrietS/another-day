@@ -179,7 +179,9 @@ void MainWindow::PlayNotificationSound()
     if (not lastNotificationTime.has_value() or
         std::chrono::steady_clock::now() - lastNotificationTime.value() > notificationInterval)
     {
-        notificationSound.Play();
+        if (settings.useAudioNotification)
+            notificationSound.Play();
+
         lastNotificationTime = std::chrono::steady_clock::now();
         Show(); // show the window if it's hidden in the tray
     }
