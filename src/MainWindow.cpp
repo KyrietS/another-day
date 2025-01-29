@@ -122,23 +122,24 @@ static void SetProgressBarValue(CustomProgressBar* progressBar, std::chrono::ste
     progressBar->SetValue(std::chrono::duration_cast<std::chrono::seconds>(timePassed).count());
 }
 
-template <typename Duration>
 void SetProgressBarText(CustomProgressBar* progressBar, std::chrono::steady_clock::time_point startPoint,
                         Duration duration)
 {
     auto timePassed = std::chrono::steady_clock::now() - startPoint;
     auto timePassedInSeconds = std::chrono::duration_cast<std::chrono::seconds>(timePassed);
     auto timeLeft = duration - timePassedInSeconds;
+    bool isOvertime = timeLeft.count() < 0;
 
-    if (timeLeft.count() < 0)
+    if (isOvertime)
     {
-        timeLeft = {};
+        timeLeft = -timeLeft;
     }
 
     int hours = std::chrono::duration_cast<std::chrono::hours>(timeLeft).count();
     int minutes = std::chrono::duration_cast<std::chrono::minutes>(timeLeft).count() % 60;
     int seconds = std::chrono::duration_cast<std::chrono::seconds>(timeLeft).count() % 60;
-    wxString text = wxString::Format(wxT("%02d:%02d:%02d"), hours, minutes, seconds);
+    auto overtimePrefix = isOvertime ? "+" : "";
+    wxString text = wxString::Format(wxT("%s%02d:%02d:%02d"), overtimePrefix, hours, minutes, seconds);
     progressBar->SetText(text);
 }
 
