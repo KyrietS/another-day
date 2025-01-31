@@ -154,6 +154,7 @@ void MainWindow::UpdateBars()
         {
             PlayNotificationSound();
             m_progressBarSession->SetFilledColor(*wxRED_BRUSH);
+            m_progressBarSession->SetTextColor(*wxWHITE);
             if (settings.autoStartBreak)
             {
                 OnStartBreak(wxCommandEvent{});
@@ -179,7 +180,10 @@ void MainWindow::UpdateBars()
     SetProgressBarValue(m_progressBarWork, workStartTime, settings.workDuration);
 
     if (m_progressBarWork->IsFilled())
+    {
         m_progressBarWork->SetFilledColor(*wxRED_BRUSH);
+        m_progressBarWork->SetTextColor(*wxWHITE);
+    }
 }
 
 void MainWindow::PlayNotificationSound()
@@ -303,6 +307,7 @@ void MainWindow::OnStartBreak(const wxCommandEvent& event)
     breakInProgress = true;
     breakStartTime = std::chrono::steady_clock::now();
     m_progressBarSession->SetFilledColor(wxBrush(wxColor("#00A5FF")));
+    m_progressBarSession->SetTextColor(*wxBLACK);
     lastNotificationTime.reset();
 
     UpdateBars();
@@ -313,6 +318,7 @@ void MainWindow::OnResetSession(const wxCommandEvent& event)
     breakInProgress = false;
     sessionStartTime = std::chrono::steady_clock::now();
     m_progressBarSession->SetFilledColor(*wxGREEN_BRUSH);
+    m_progressBarSession->SetTextColor(*wxBLACK);
     lastNotificationTime.reset();
 
     UpdateBars();
