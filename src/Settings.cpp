@@ -1,4 +1,3 @@
-#pragma once
 #include "pch.hpp"
 
 #include "Settings.hpp"
