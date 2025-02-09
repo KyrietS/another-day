@@ -1,14 +1,14 @@
 #include "pch.hpp"
 
 #include "DurationValidator.hpp"
+#include <optional>
+#include <sstream>
 
 namespace another_day
 {
-
 bool DurationValidator::TransferToWindow()
 {
-    long long seconds = std::chrono::duration_cast<std::chrono::seconds>(duration).count();
-    durationString = seconds ? wxString::Format("%lld", seconds) : wxString("");
+    durationString = duration.ToString();
     return wxGenericValidator::TransferToWindow();
 }
 
@@ -17,13 +17,15 @@ bool DurationValidator::TransferFromWindow()
     if (not wxGenericValidator::TransferFromWindow())
         return false;
 
-    long long value = 0;
-    if (not durationString.IsEmpty() and not durationString.ToLongLong(&value))
+    auto parsedDuration = DurationWithUnit::FromString(durationString.ToStdString());
+    if (not durationString.IsEmpty() and not parsedDuration.has_value())
     {
-        wxLogWarning("Failed to parse duration: '%s'", durationString);
+        wxLogWarning("Invalid duration value: '%s'.\nAvailable units are: s, m, h", durationString);
         return false;
     }
-    duration = std::chrono::seconds{value};
+
+    duration = parsedDuration.value_or(DurationWithUnit{});
+
     return true;
 }
 

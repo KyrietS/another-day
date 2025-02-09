@@ -189,7 +189,7 @@ void MainWindow::UpdateBars()
 void MainWindow::PlayNotificationSound()
 {
     if (not lastNotificationTime.has_value() or
-        std::chrono::steady_clock::now() - lastNotificationTime.value() > settings.notificationInterval)
+        std::chrono::steady_clock::now() - lastNotificationTime.value() > settings.notificationInterval.value)
     {
         if (settings.useAudioNotification)
             notificationSound.Play();
@@ -215,21 +215,21 @@ void MainWindow::AddDebugOptions(wxMenu& contextMenu)
 void MainWindow::OnDebugFinishSession(wxCommandEvent& event)
 {
     auto now = std::chrono::steady_clock::now();
-    auto newSessionStart = now - settings.sessionDuration + std::chrono::seconds{3};
+    auto newSessionStart = now - settings.sessionDuration.value + std::chrono::seconds{3};
     sessionStartTime = newSessionStart;
 }
 
 void MainWindow::OnDebugFinishBreak(wxCommandEvent& event)
 {
     auto now = std::chrono::steady_clock::now();
-    auto newBreakStart = now - settings.breakDuration + std::chrono::seconds{3};
+    auto newBreakStart = now - settings.breakDuration.value + std::chrono::seconds{3};
     breakStartTime = newBreakStart;
 }
 
 void MainWindow::OnDebugFinishWork(wxCommandEvent& event)
 {
     auto now = std::chrono::steady_clock::now();
-    auto newWorkStart = now - settings.workDuration + std::chrono::seconds{3};
+    auto newWorkStart = now - settings.workDuration.value + std::chrono::seconds{3};
     workStartTime = newWorkStart;
 }
 

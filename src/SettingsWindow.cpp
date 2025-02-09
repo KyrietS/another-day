@@ -43,20 +43,20 @@ SettingsWindow::SettingsWindow(wxWindow* parent, Settings& settings)
             gridSizer->Add(new wxStaticText(durationPanel, wxID_ANY, "Break:"), 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
             breakDurationCtrl = new wxTextCtrl(durationPanel, wxID_ANY);
             breakDurationCtrl->SetValidator(DurationValidator(settings.breakDuration));
-            breakDurationCtrl->SetToolTip("Number of seconds");
+            breakDurationCtrl->SetToolTip("Break duration (available units: s, m, h)");
             gridSizer->Add(breakDurationCtrl, 1, wxALL | wxEXPAND, 1);
 
             gridSizer->Add(new wxStaticText(durationPanel, wxID_ANY, "Session:"), 0, wxALL | wxALIGN_CENTER_VERTICAL,
                            5);
             sessionDurationCtrl = new wxTextCtrl(durationPanel, wxID_ANY);
             sessionDurationCtrl->SetValidator(DurationValidator(settings.sessionDuration));
-            sessionDurationCtrl->SetToolTip("Number of seconds");
+            sessionDurationCtrl->SetToolTip("Session duration (available units: s, m, h)");
             gridSizer->Add(sessionDurationCtrl, 1, wxALL | wxEXPAND, 1);
 
             gridSizer->Add(new wxStaticText(durationPanel, wxID_ANY, "Work:"), 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
             workDurationCtrl = new wxTextCtrl(durationPanel, wxID_ANY);
             workDurationCtrl->SetValidator(DurationValidator(settings.workDuration));
-            workDurationCtrl->SetToolTip("Number of seconds");
+            workDurationCtrl->SetToolTip("Workday duration (available units: s, m, h)");
             gridSizer->Add(workDurationCtrl, 1, wxALL | wxEXPAND, 1);
 
             gridSizer->Add(new wxStaticText(durationPanel, wxID_ANY, "Postpone:"), 0, wxALL | wxALIGN_CENTER_VERTICAL,
@@ -94,7 +94,7 @@ SettingsWindow::SettingsWindow(wxWindow* parent, Settings& settings)
                            wxALL | wxALIGN_CENTER_VERTICAL, 5);
             wxTextCtrl* notificationIntervalCtrl = new wxTextCtrl(notificationPanel, wxID_ANY);
             notificationIntervalCtrl->SetValidator(DurationValidator(settings.notificationInterval));
-            notificationIntervalCtrl->SetToolTip("Number of second");
+            notificationIntervalCtrl->SetToolTip("Notification interval period (available units: s, m, h)");
             gridSizer->Add(notificationIntervalCtrl, 1, wxALL | wxEXPAND, 1);
         }
         notificationSizer->Add(gridSizer, 1, wxEXPAND | wxALL, 5);

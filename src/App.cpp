@@ -19,7 +19,6 @@ bool App::OnInit()
         return false;
 
     SetAppName("another-day");
-    wxConfig::Get()->SetRecordDefaults(true);
 
     settings = std::make_unique<Settings>(*wxConfig::Get());
 

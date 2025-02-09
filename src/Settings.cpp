@@ -11,15 +11,18 @@ Settings::Settings(const wxConfigBase& config)
     autoStartBreak = config.ReadBool("AutoStartBreak", autoStartBreak);
     autoStartSession = config.ReadBool("AutoStartSession", autoStartSession);
 
-    breakDuration = std::chrono::seconds{config.ReadLongLong("BreakDuration", breakDuration.count())};
-    sessionDuration = std::chrono::seconds{config.ReadLongLong("SessionDuration", sessionDuration.count())};
-    workDuration = std::chrono::seconds{config.ReadLongLong("WorkDuration", workDuration.count())};
-    postponeDuration = std::chrono::seconds{config.ReadLongLong("PostponeDuration", postponeDuration.count())};
+    breakDuration = DurationWithUnit::FromString(config.Read("BreakDuration").ToStdString()).value_or(breakDuration);
+    sessionDuration =
+        DurationWithUnit::FromString(config.Read("SessionDuration").ToStdString()).value_or(sessionDuration);
+    workDuration = DurationWithUnit::FromString(config.Read("WorkDuration").ToStdString()).value_or(workDuration);
+    postponeDuration =
+        DurationWithUnit::FromString(config.Read("PostponeDuration").ToStdString()).value_or(postponeDuration);
 
     useAudioNotification = config.ReadBool("UseAudioNotification", useAudioNotification);
     useSystemNotification = config.ReadBool("UseSystemNotification", useSystemNotification);
+
     notificationInterval =
-        std::chrono::seconds{config.ReadLongLong("NotificationInterval", notificationInterval.count())};
+        DurationWithUnit::FromString(config.Read("NotificationInterval").ToStdString()).value_or(notificationInterval);
 }
 
 void Settings::SaveToConfig(wxConfigBase& config)
@@ -27,13 +30,13 @@ void Settings::SaveToConfig(wxConfigBase& config)
     config.Write("AlwaysOnTop", alwaysOnTop);
     config.Write("AutoStartBreak", autoStartBreak);
     config.Write("AutoStartSession", autoStartSession);
-    config.Write("BreakDuration", breakDuration.count());
-    config.Write("SessionDuration", sessionDuration.count());
-    config.Write("WorkDuration", workDuration.count());
-    config.Write("PostponeDuration", postponeDuration.count());
+    config.Write("BreakDuration", wxString(breakDuration.ToString()));
+    config.Write("SessionDuration", wxString(sessionDuration.ToString()));
+    config.Write("WorkDuration", wxString(workDuration.ToString()));
+    config.Write("PostponeDuration", wxString(postponeDuration.ToString()));
     config.Write("UseAudioNotification", useAudioNotification);
     config.Write("UseSystemNotification", useSystemNotification);
-    config.Write("NotificationInterval", notificationInterval.count());
+    config.Write("NotificationInterval", wxString(notificationInterval.ToString()));
     config.Flush();
 }
 
