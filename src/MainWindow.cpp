@@ -72,7 +72,7 @@ MainWindow::MainWindow(Settings& settings)
     }
 
     sessionStartTime = std::chrono::steady_clock::now();
-    workStartTime = std::chrono::steady_clock::now();
+    workStartTime = std::chrono::steady_clock::now() - workdayProgress.Restore();
 
     UpdateBars();
 }
@@ -199,9 +199,16 @@ void MainWindow::PlayNotificationSound()
     }
 }
 
+void MainWindow::SaveProgress()
+{
+    Duration workdayDuration = std::chrono::duration_cast<Duration>(std::chrono::steady_clock::now() - workStartTime);
+    workdayProgress.Update(workdayDuration);
+}
+
 void MainWindow::OnTimer(wxTimerEvent& event)
 {
     UpdateBars();
+    SaveProgress();
 }
 
 void MainWindow::AddDebugOptions(wxMenu& contextMenu)

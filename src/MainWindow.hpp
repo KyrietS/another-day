@@ -2,6 +2,7 @@
 #include "CustomProgressBar.hpp"
 #include "Duration.hpp"
 #include "Settings.hpp"
+#include "WorkdayProgress.hpp"
 #include <chrono>
 #include <optional>
 
@@ -18,6 +19,7 @@ public:
 
 private:
     Settings& settings;
+    WorkdayProgress workdayProgress;
 
     bool m_dragging = false;
     wxPoint m_dragStartOffset;
@@ -39,6 +41,7 @@ private:
 
     void UpdateBars();
     void PlayNotificationSound();
+    void SaveProgress();
 
     void setEvents(wxEvtHandler* handler);
     void OnLeftMouseDown(wxMouseEvent& event);
