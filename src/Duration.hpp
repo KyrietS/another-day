@@ -1,5 +1,6 @@
 #pragma once
 #include <chrono>
+#include <format>
 #include <optional>
 #include <string>
 
@@ -8,26 +9,28 @@ namespace another_day
 using Duration =
     std::common_type<std::chrono::seconds, std::common_type<std::chrono::minutes, std::chrono::hours>::type>::type;
 
-enum class DurationUnit
+struct DurationSyntaxError : std::runtime_error
 {
-    Seconds,
-    Minutes,
-    Hours
+    using std::runtime_error::runtime_error;
 };
 
-struct DurationWithUnit
+struct DurationSetting
 {
-    DurationWithUnit() = default;
+    static std::optional<DurationSetting> FromString(const std::string&);
 
-    DurationWithUnit(std::chrono::seconds value) : value(value), unit(DurationUnit::Seconds)
+    DurationSetting() = default;
+
+    DurationSetting(const std::string& valueString);
+
+    DurationSetting(std::chrono::seconds value) : value(value), valueString(std::format("{}s", value.count()))
     {
     }
 
-    DurationWithUnit(std::chrono::minutes value) : value(value), unit(DurationUnit::Minutes)
+    DurationSetting(std::chrono::minutes value) : value(value), valueString(std::format("{}m", value.count()))
     {
     }
 
-    DurationWithUnit(std::chrono::hours value) : value(value), unit(DurationUnit::Hours)
+    DurationSetting(std::chrono::hours value) : value(value), valueString(std::format("{}h", value.count()))
     {
     }
 
@@ -36,13 +39,8 @@ struct DurationWithUnit
         return value;
     }
 
-    long long CountInUnits() const;
-    std::string ToString() const;
-
-    static std::optional<DurationWithUnit> FromString(const std::string&);
-
     Duration value{};
-    DurationUnit unit{};
+    std::string valueString{};
 };
 
 } // namespace another_day

@@ -18,14 +18,14 @@ struct Settings
     bool autoStartSession = true;
 
     // Duration
-    DurationWithUnit breakDuration = std::chrono::minutes{10};
-    DurationWithUnit sessionDuration = std::chrono::minutes{50};
-    DurationWithUnit workDuration = std::chrono::hours{8};
-    DurationWithUnit postponeDuration = {};
+    DurationSetting breakDuration = std::chrono::minutes{10};
+    DurationSetting sessionDuration = std::chrono::minutes{50};
+    DurationSetting workDuration = std::chrono::hours{8};
+    DurationSetting postponeDuration = {};
 
     // Notification
     bool useAudioNotification = true;
     bool useSystemNotification = false;
-    DurationWithUnit notificationInterval = std::chrono::seconds{60};
+    DurationSetting notificationInterval = std::chrono::seconds{60};
 };
 } // namespace another_day

@@ -8,7 +8,7 @@ class DurationValidator : public wxGenericValidator
 public:
     DurationValidator(const DurationValidator&) = default;
 
-    DurationValidator(DurationWithUnit& duration) : wxGenericValidator(&durationString), duration(duration)
+    DurationValidator(DurationSetting& duration) : wxGenericValidator(&durationString), duration(duration)
     {
     }
 
@@ -21,7 +21,8 @@ public:
 
     bool TransferFromWindow() override;
 
+private:
     wxString durationString;
-    DurationWithUnit& duration;
+    DurationSetting& duration;
 };
 } // namespace another_day

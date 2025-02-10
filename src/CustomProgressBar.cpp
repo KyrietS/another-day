@@ -80,7 +80,7 @@ void CustomProgressBar::OnPaint(wxPaintEvent& event)
 
     // Filled progress bar
     dc.SetBrush(m_filledBrush);
-    int width = (m_value * size.GetWidth()) / m_range;
+    int width = (m_value * size.GetWidth()) / std::max(1, m_range);
     width = std::max(0, std::min(size.GetWidth(), width));
     dc.DrawRectangle(0, 0, width, size.GetHeight());
 

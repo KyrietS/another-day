@@ -1,65 +1,79 @@
 #include "pch.hpp"
 
 #include "Duration.hpp"
+#include <list>
+#include <utility>
 
 namespace another_day
 {
-long long DurationWithUnit::CountInUnits() const
+namespace
 {
-    switch (unit)
-    {
-    case DurationUnit::Seconds:
-        return std::chrono::duration_cast<std::chrono::seconds>(value).count();
-    case DurationUnit::Minutes:
-        return std::chrono::duration_cast<std::chrono::minutes>(value).count();
-    case DurationUnit::Hours:
-        return std::chrono::duration_cast<std::chrono::hours>(value).count();
-    default:
-        throw std::runtime_error("Invalid duration unit");
-    }
-}
-std::string DurationWithUnit::ToString() const
+using Token = std::pair<long long, char>;
+
+std::list<Token> ReadTokens(const std::string& durationString)
 {
-    std::stringstream ss;
-    ss << CountInUnits();
-    switch (unit)
+    std::list<Token> tokens;
+    std::stringstream ss{durationString};
+
+    long long value = 0;
+    char unit = 0;
+
+    while (ss >> value)
     {
-    case DurationUnit::Seconds:
-        ss << "s";
-        break;
-    case DurationUnit::Minutes:
-        ss << "m";
-        break;
-    case DurationUnit::Hours:
-        ss << "h";
-        break;
-    default:
-        throw std::runtime_error("Invalid duration unit");
+        if (ss >> unit)
+        {
+            tokens.push_back({value, unit});
+        }
+        else
+        {
+            throw DurationSyntaxError{"Invalid unit in duration value"};
+        }
     }
-    return ss.str();
+
+    if (not ss.eof())
+        throw DurationSyntaxError{"Invalid duration value"};
+
+    return tokens;
 }
 
-std::optional<DurationWithUnit> DurationWithUnit::FromString(const std::string& durationString)
+template <typename TimeUnit> TimeUnit Read(std::list<Token>& tokens, char unit)
+{
+    if (not tokens.empty() and tokens.front().second == unit)
+    {
+        TimeUnit hours{tokens.front().first};
+        tokens.pop_front();
+        return hours;
+    }
+
+    return TimeUnit{0};
+}
+} // namespace
+
+std::optional<DurationSetting> DurationSetting::FromString(const std::string& durationString)
 {
     if (durationString.empty())
         return std::nullopt;
 
-    std::stringstream ss{durationString};
-    long long value = 0;
-    std::string unit = "";
+    try
+    {
+        return DurationSetting{durationString};
+    }
+    catch (const DurationSyntaxError&)
+    {
+        return std::nullopt;
+    }
+}
 
-    ss >> value >> unit;
+DurationSetting::DurationSetting(const std::string& valueString) : value(0), valueString(valueString)
+{
+    auto tokens = ReadTokens(valueString);
 
-    if (unit == "")
-        return std::chrono::seconds{value};
-    else if (unit == "s")
-        return std::chrono::seconds{value};
-    else if (unit == "m")
-        return std::chrono::minutes{value};
-    else if (unit == "h")
-        return std::chrono::hours{value};
+    value += Read<std::chrono::hours>(tokens, 'h');
+    value += Read<std::chrono::minutes>(tokens, 'm');
+    value += Read<std::chrono::seconds>(tokens, 's');
 
-    return std::nullopt;
+    if (not tokens.empty()) // some tokens were not consumed
+        throw DurationSyntaxError{"Invalid duration value"};
 }
 
 } // namespace another_day
