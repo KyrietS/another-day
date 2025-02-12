@@ -199,19 +199,19 @@ void MainWindow::PlayNotificationSound()
     }
 }
 
-void MainWindow::SaveProgress(bool forceSave)
+void MainWindow::SaveProgress(Duration interval)
 {
+    if (workdayProgress.TimeSinceLastSave() < interval)
+        return;
+
     Duration workdayDuration = std::chrono::duration_cast<Duration>(std::chrono::steady_clock::now() - workStartTime);
-    if (forceSave)
-        workdayProgress.SaveProgress(workdayDuration);
-    else
-        workdayProgress.Update(workdayDuration);
+    workdayProgress.Save(workdayDuration);
 }
 
 void MainWindow::OnTimer(wxTimerEvent& event)
 {
     UpdateBars();
-    SaveProgress();
+    SaveProgress(std::chrono::seconds{5}); // save progress every 5 minutes
 }
 
 void MainWindow::AddDebugOptions(wxMenu& contextMenu)
@@ -289,7 +289,7 @@ void MainWindow::OnExit(wxCommandEvent& event)
 
 void MainWindow::OnClose(wxCloseEvent& event)
 {
-    SaveProgress(true);
+    SaveProgress();
 
     if (event.CanVeto())
     {

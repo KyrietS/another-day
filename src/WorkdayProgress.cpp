@@ -8,46 +8,41 @@ namespace
 {
 std::string GetTimestamp()
 {
-    const auto ymd =
-        std::chrono::year_month_day(std::chrono::floor<std::chrono::days>(std::chrono::system_clock::now()));
+    std::chrono::zoned_time zonedTime{std::chrono::current_zone(), std::chrono::system_clock::now()};
+    const auto ymd = std::chrono::year_month_day(std::chrono::floor<std::chrono::days>(zonedTime.get_local_time()));
     return std::format("{}", ymd);
 }
 } // namespace
 
 WorkdayProgress::WorkdayProgress()
 {
-    wxConfig::Get()->Write("WorkdayProgressTimestamp", wxString(GetTimestamp()));
-}
+    auto currentTimestamp = GetTimestamp();
+    auto savedTimestamp = wxConfig::Get()->Read("WorkdayProgressTimestamp", "");
 
-void WorkdayProgress::Update(Duration duration)
-{
-    auto now = std::chrono::steady_clock::now();
-    auto timeSinceLastUpdateSave = now - lastUpdateSaveTime;
-
-    // Save progress every 5 minutes
-    if (timeSinceLastUpdateSave >= std::chrono::minutes{5})
+    if (currentTimestamp != savedTimestamp) // New day, reset progress
     {
-        lastUpdateSaveTime = now;
-        SaveProgress(duration);
+        wxConfig::Get()->Write("WorkdayProgressDuration", 0LL);
     }
+
+    wxConfig::Get()->Write("WorkdayProgressTimestamp", wxString(currentTimestamp));
 }
 
-void WorkdayProgress::SaveProgress(Duration duration)
+void WorkdayProgress::Save(Duration duration)
 {
     wxConfig::Get()->Write("WorkdayProgressDuration", duration.count());
+    lastSaveTime = std::chrono::steady_clock::now();
 }
 
 Duration WorkdayProgress::Restore()
 {
-    auto currentTimestamp = GetTimestamp();
-    auto savedTimestamp = wxConfig::Get()->Read("WorkdayProgressTimestamp", "");
+    return Duration{wxConfig::Get()->ReadLongLong("WorkdayProgressDuration", 0)};
+}
 
-    if (currentTimestamp == savedTimestamp) // Same day, restore progress
-    {
-        return Duration{wxConfig::Get()->ReadLongLong("WorkdayProgressDuration", 0)};
-    }
-
-    return Duration{0};
+Duration WorkdayProgress::TimeSinceLastSave()
+{
+    auto now = std::chrono::steady_clock::now();
+    auto timeSinceLastSave = now - lastSaveTime;
+    return std::chrono::duration_cast<Duration>(timeSinceLastSave);
 }
 
 } // namespace another_day

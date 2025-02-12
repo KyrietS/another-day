@@ -41,7 +41,7 @@ private:
 
     void UpdateBars();
     void PlayNotificationSound();
-    void SaveProgress(bool forceSave = false);
+    void SaveProgress(Duration interval = {});
 
     void setEvents(wxEvtHandler* handler);
     void OnLeftMouseDown(wxMouseEvent& event);
