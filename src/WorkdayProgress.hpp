@@ -9,6 +9,7 @@ class WorkdayProgress
 public:
     WorkdayProgress();
     void Update(Duration);
+    void SaveProgress(Duration);
     Duration Restore();
 
 private:

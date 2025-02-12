@@ -199,10 +199,13 @@ void MainWindow::PlayNotificationSound()
     }
 }
 
-void MainWindow::SaveProgress()
+void MainWindow::SaveProgress(bool forceSave)
 {
     Duration workdayDuration = std::chrono::duration_cast<Duration>(std::chrono::steady_clock::now() - workStartTime);
-    workdayProgress.Update(workdayDuration);
+    if (forceSave)
+        workdayProgress.SaveProgress(workdayDuration);
+    else
+        workdayProgress.Update(workdayDuration);
 }
 
 void MainWindow::OnTimer(wxTimerEvent& event)
@@ -286,6 +289,8 @@ void MainWindow::OnExit(wxCommandEvent& event)
 
 void MainWindow::OnClose(wxCloseEvent& event)
 {
+    SaveProgress(true);
+
     if (event.CanVeto())
     {
         if (wxMessageBox("Are you sure you want to quit?\nAll progress will be lost.", "Exit another-day",

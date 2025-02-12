@@ -28,8 +28,13 @@ void WorkdayProgress::Update(Duration duration)
     if (timeSinceLastUpdateSave >= std::chrono::minutes{5})
     {
         lastUpdateSaveTime = now;
-        wxConfig::Get()->Write("WorkdayProgressDuration", duration.count());
+        SaveProgress(duration);
     }
+}
+
+void WorkdayProgress::SaveProgress(Duration duration)
+{
+    wxConfig::Get()->Write("WorkdayProgressDuration", duration.count());
 }
 
 Duration WorkdayProgress::Restore()
