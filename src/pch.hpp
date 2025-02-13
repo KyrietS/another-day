@@ -4,6 +4,7 @@
 #include <wx/dcbuffer.h>
 #include <wx/notebook.h>
 #include <wx/sound.h>
+#include <wx/stdpaths.h>
 #include <wx/string.h>
 #include <wx/taskbar.h>
 #include <wx/valgen.h>

@@ -1,5 +1,6 @@
 #pragma once
 #include "Duration.hpp"
+#include <filesystem>
 
 class wxConfigBase;
 
@@ -16,6 +17,7 @@ struct Settings
     bool alwaysOnTop = false;
     bool autoStartBreak = false;
     bool autoStartSession = true;
+    bool enableHistory = false;
 
     // Duration
     DurationSetting breakDuration = std::chrono::minutes{10};

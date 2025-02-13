@@ -10,6 +10,7 @@ Settings::Settings(const wxConfigBase& config)
     alwaysOnTop = config.ReadBool("AlwaysOnTop", alwaysOnTop);
     autoStartBreak = config.ReadBool("AutoStartBreak", autoStartBreak);
     autoStartSession = config.ReadBool("AutoStartSession", autoStartSession);
+    enableHistory = config.ReadBool("EnableHistory", enableHistory);
 
     breakDuration = DurationSetting::FromString(config.Read("BreakDuration").ToStdString()).value_or(breakDuration);
     sessionDuration = DurationSetting::FromString(config.Read("SessionDuration").ToStdString()).value_or(sessionDuration);
@@ -28,6 +29,7 @@ void Settings::SaveToConfig(wxConfigBase& config)
     config.Write("AlwaysOnTop", alwaysOnTop);
     config.Write("AutoStartBreak", autoStartBreak);
     config.Write("AutoStartSession", autoStartSession);
+    config.Write("EnableHistory", enableHistory);
     config.Write("BreakDuration", wxString(breakDuration.valueString));
     config.Write("SessionDuration", wxString(sessionDuration.valueString));
     config.Write("WorkDuration", wxString(workDuration.valueString));

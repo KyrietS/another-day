@@ -29,6 +29,12 @@ SettingsWindow::SettingsWindow(wxWindow* parent, Settings& settings)
         autoStartSessionCheckBox->SetValidator(wxGenericValidator(&settings.autoStartSession));
         autoStartSessionCheckBox->SetToolTip("Start the session automatically when the break ends");
         generalSizer->Add(autoStartSessionCheckBox, 0, wxALL, 5);
+
+        enableHistoryCheckBox = new wxCheckBox(generalPanel, wxID_ANY, "Enable history");
+        enableHistoryCheckBox->SetValidator(wxGenericValidator(&settings.enableHistory));
+        enableHistoryCheckBox->SetToolTip("Save your workday history to a file");
+        enableHistoryCheckBox->Enable(false);
+        generalSizer->Add(enableHistoryCheckBox, 0, wxEXPAND | wxALL, 5);
     }
     generalPanel->SetSizerAndFit(generalSizer);
     notebook->AddPage(generalPanel, "General");

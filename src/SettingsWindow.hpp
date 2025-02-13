@@ -14,14 +14,21 @@ public:
 private:
     Settings& settings;
 
+    // General
+    wxCheckBox* alwaysOnTopCheckBox;
+    wxCheckBox* autoStartBreakCheckBox;
+    wxCheckBox* autoStartSessionCheckBox;
+    wxCheckBox* enableHistoryCheckBox;
+    wxTextCtrl* historyPathCtrl;
+
+    // Duration
     wxTextCtrl* breakDurationCtrl;
     wxTextCtrl* sessionDurationCtrl;
     wxTextCtrl* workDurationCtrl;
     wxTextCtrl* postponeDurationCtrl;
+
+    // Notification
     wxCheckBox* useAudioNotificationCheckBox;
     wxCheckBox* useSystemNotificationCheckBox;
-    wxCheckBox* alwaysOnTopCheckBox;
-    wxCheckBox* autoStartBreakCheckBox;
-    wxCheckBox* autoStartSessionCheckBox;
 };
 } // namespace another_day
