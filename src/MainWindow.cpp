@@ -211,7 +211,7 @@ void MainWindow::SaveProgress(Duration interval)
 void MainWindow::OnTimer(wxTimerEvent& event)
 {
     UpdateBars();
-    SaveProgress(std::chrono::seconds{5}); // save progress every 5 minutes
+    SaveProgress(std::chrono::minutes{5}); // save progress every 5 minutes
 }
 
 void MainWindow::AddDebugOptions(wxMenu& contextMenu)
