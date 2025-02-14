@@ -30,6 +30,7 @@ WorkdayProgress::WorkdayProgress()
 void WorkdayProgress::Save(Duration duration)
 {
     wxConfig::Get()->Write("WorkdayProgressDuration", duration.count());
+    wxConfig::Get()->Flush();
     lastSaveTime = std::chrono::steady_clock::now();
 }
 
