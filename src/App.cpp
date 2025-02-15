@@ -24,7 +24,7 @@ try
     wxStandardPaths::Get().SetFileLayout(wxStandardPaths::FileLayout_XDG);
 
     settings = std::make_unique<Settings>(*wxConfig::Get());
-    database = std::make_shared<Database>(GetUserDataDir() / "history.db");
+    database = std::make_unique<Database>(GetUserDataDir() / "history.db");
 
     MainWindow* window = new MainWindow(*settings, *database);
     window->Show(true);

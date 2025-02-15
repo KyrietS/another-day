@@ -15,6 +15,6 @@ private:
     std::filesystem::path GetUserDataDir();
 
     std::unique_ptr<Settings> settings;
-    std::shared_ptr<Database> database;
+    std::unique_ptr<Database> database;
 };
 } // namespace another_day
