@@ -21,9 +21,10 @@ try
         return false;
 
     SetAppName("another-day");
+    wxStandardPaths::Get().SetFileLayout(wxStandardPaths::FileLayout_XDG);
 
     settings = std::make_unique<Settings>(*wxConfig::Get());
-    database = std::make_shared<Database>(GetUserDataDir() / "another-day.db");
+    database = std::make_shared<Database>(GetUserDataDir() / "history.db");
 
     MainWindow* window = new MainWindow(*settings, *database);
     window->Show(true);
@@ -50,7 +51,17 @@ int App::OnRun()
 
 std::filesystem::path App::GetUserDataDir()
 {
+#if defined(__WINDOWS__)
     std::filesystem::path userDataDir = wxStandardPaths::Get().GetUserDataDir().ToStdString();
+#else
+    wxString xdgDataHome = wxGetenv("XDG_DATA_HOME");
+    if (xdgDataHome.empty())
+    {
+        xdgDataHome = wxString(wxGetenv("HOME")) + "/.local/share";
+    }
+    std::filesystem::path userDataDir = xdgDataHome.ToStdString();
+    userDataDir /= GetAppName().ToStdString();
+#endif
 
     if (not std::filesystem::is_directory(userDataDir))
     {
@@ -58,6 +69,7 @@ std::filesystem::path App::GetUserDataDir()
         {
             throw std::runtime_error("Failed to create user data directory: " + userDataDir.string());
         }
+        wxLogDebug("Created user data directory: %s", userDataDir.string());
     }
 
     return userDataDir;
