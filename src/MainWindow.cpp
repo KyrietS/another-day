@@ -83,7 +83,7 @@ MainWindow::MainWindow(Settings& settings, Database& database)
 MainWindow::~MainWindow()
 {
     database.InsertEvent(events::END);
-    // TODO: Save progress here
+    SaveProgress();
 }
 
 void MainWindow::setEvents(wxEvtHandler* handler)
@@ -208,7 +208,7 @@ void MainWindow::PlayNotificationSound()
     }
 }
 
-void MainWindow::SaveProgress(Duration interval)
+void MainWindow::SaveProgress(Duration interval) noexcept
 {
     if (workdayProgress.TimeSinceLastSave() < interval)
         return;
@@ -298,8 +298,6 @@ void MainWindow::OnExit(wxCommandEvent& event)
 
 void MainWindow::OnClose(wxCloseEvent& event)
 {
-    SaveProgress();
-
     if (event.CanVeto())
     {
         if (wxMessageBox("Are you sure you want to quit?\nAll progress will be lost.", "Exit another-day",

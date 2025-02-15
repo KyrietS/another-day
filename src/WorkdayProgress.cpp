@@ -39,7 +39,7 @@ Duration WorkdayProgress::Restore()
     return Duration{wxConfig::Get()->ReadLongLong("WorkdayProgressDuration", 0)};
 }
 
-Duration WorkdayProgress::TimeSinceLastSave()
+Duration WorkdayProgress::TimeSinceLastSave() const
 {
     auto now = std::chrono::steady_clock::now();
     auto timeSinceLastSave = now - lastSaveTime;

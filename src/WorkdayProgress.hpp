@@ -10,7 +10,7 @@ public:
     WorkdayProgress();
     void Save(Duration);
     Duration Restore();
-    Duration TimeSinceLastSave();
+    Duration TimeSinceLastSave() const;
 
 private:
     std::chrono::steady_clock::time_point lastSaveTime;
