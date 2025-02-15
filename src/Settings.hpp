@@ -17,7 +17,7 @@ struct Settings
     bool alwaysOnTop = false;
     bool autoStartBreak = false;
     bool autoStartSession = true;
-    bool enableHistory = false;
+    bool enableHistory = true;
 
     // Duration
     DurationSetting breakDuration = std::chrono::minutes{10};

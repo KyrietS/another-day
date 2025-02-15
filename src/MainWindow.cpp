@@ -6,8 +6,9 @@
 
 namespace another_day
 {
-MainWindow::MainWindow(Settings& settings)
-    : wxFrame(nullptr, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, settings.GetFrameStyle()), settings(settings)
+MainWindow::MainWindow(Settings& settings, Database& database)
+    : wxFrame(nullptr, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, settings.GetFrameStyle()), settings(settings),
+      database(database)
 {
     this->SetBackgroundColour(*wxWHITE);
 
@@ -74,7 +75,15 @@ MainWindow::MainWindow(Settings& settings)
     sessionStartTime = std::chrono::steady_clock::now();
     workStartTime = std::chrono::steady_clock::now() - workdayProgress.Restore();
 
+    database.InsertEvent(events::BEGIN_WORK);
+
     UpdateBars();
+}
+
+MainWindow::~MainWindow()
+{
+    database.InsertEvent(events::END);
+    // TODO: Save progress here
 }
 
 void MainWindow::setEvents(wxEvtHandler* handler)
@@ -316,6 +325,8 @@ void MainWindow::OnReveal(const wxCommandEvent& event)
 
 void MainWindow::OnStartBreak(const wxCommandEvent& event)
 {
+    database.InsertEvent(events::BEGIN_BREAK);
+
     breakInProgress = true;
     breakStartTime = std::chrono::steady_clock::now();
     m_progressBarSession->SetFilledColor(wxBrush(wxColor("#00A5FF")));
@@ -327,6 +338,8 @@ void MainWindow::OnStartBreak(const wxCommandEvent& event)
 
 void MainWindow::OnResetSession(const wxCommandEvent& event)
 {
+    database.InsertEvent(events::BEGIN_WORK);
+
     breakInProgress = false;
     sessionStartTime = std::chrono::steady_clock::now();
     m_progressBarSession->SetFilledColor(*wxGREEN_BRUSH);

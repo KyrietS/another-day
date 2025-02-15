@@ -1,5 +1,6 @@
 #pragma once
 #include "CustomProgressBar.hpp"
+#include "Database.hpp"
 #include "Duration.hpp"
 #include "Settings.hpp"
 #include "WorkdayProgress.hpp"
@@ -15,10 +16,12 @@ constexpr auto FRAME_STYLE = wxSTAY_ON_TOP;
 class MainWindow : public wxFrame
 {
 public:
-    MainWindow(Settings&);
+    MainWindow(Settings&, Database&);
+    ~MainWindow();
 
 private:
     Settings& settings;
+    Database& database;
     WorkdayProgress workdayProgress;
 
     bool m_dragging = false;
