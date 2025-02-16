@@ -24,7 +24,7 @@ bool DurationValidator::TransferFromWindow()
     }
     catch (const DurationSyntaxError&)
     {
-        wxLogWarning("Invalid duration: '%s'.\nAvailable units are: s, m, h", durationString);
+        wxLogWarning("Invalid duration: '%s'.\nExample: 7h 30m 15s", durationString);
         return false;
     }
 }
