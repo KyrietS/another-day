@@ -23,16 +23,20 @@ std::chrono::system_clock::time_point StringToTimePoint(const std::string& datet
 }
 } // namespace
 
+Database::Database(const std::filesystem::path& path) : path(path)
+{
+}
+
 Database::~Database()
 {
     Close();
 }
 
-Database::Database(const std::filesystem::path& path) : path(path)
+void Database::Open()
 {
-    if (db)
+    if (IsOpen())
     {
-        Close();
+        return;
     }
 
     if (sqlite3_open(path.string().c_str(), &db) != SQLITE_OK)
@@ -46,26 +50,26 @@ Database::Database(const std::filesystem::path& path) : path(path)
     CreateEventTable();
 }
 
+bool Database::IsOpen() const noexcept
+{
+    return db != nullptr;
+}
+
 void Database::Close() noexcept
 {
-    if (db)
+    if (IsOpen())
     {
         sqlite3_close(db);
         db = nullptr;
     }
 }
 
-void Database::InsertEvent(std::string_view data)
-{
-    InsertEvent(std::chrono::system_clock::now(), data);
-}
-
-void Database::InsertEvent(std::chrono::system_clock::time_point timestamp, std::string_view data)
+void Database::InsertEvent(std::chrono::system_clock::time_point timestamp, std::string_view description)
 {
     AssertOpen();
 
     const char* sql = R"(
-        INSERT INTO events (timestamp, type)
+        INSERT INTO events (timestamp, description)
         VALUES (?, ?);
     )";
 
@@ -81,7 +85,7 @@ void Database::InsertEvent(std::chrono::system_clock::time_point timestamp, std:
     std::string ts_str = std::format("{:%Y-%m-%d %H:%M:%S}", zonedTime);
 
     sqlite3_bind_text(stmt, 1, ts_str.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_text(stmt, 2, data.data(), data.size(), SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 2, description.data(), description.size(), SQLITE_STATIC);
 
     if (sqlite3_step(stmt) != SQLITE_DONE)
     {
@@ -98,7 +102,7 @@ std::vector<Event> Database::GetEventsFromOneDay(std::chrono::system_clock::time
     AssertOpen();
 
     const char* sql = R"(
-        SELECT id, timestamp, type
+        SELECT id, timestamp, description
         FROM events
         WHERE date(timestamp) = ?;
     )";
@@ -120,15 +124,15 @@ std::vector<Event> Database::GetEventsFromOneDay(std::chrono::system_clock::time
         std::string timestamp(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)));
         std::chrono::system_clock::time_point timePoint = StringToTimePoint(timestamp);
 
-        auto type = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-        if (type == nullptr)
+        auto description = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        if (description == nullptr)
         {
-            auto msg = std::format("Failed to get type: {}", sqlite3_errmsg(db));
+            auto msg = std::format("Failed to get description: {}", sqlite3_errmsg(db));
             sqlite3_finalize(stmt);
             throw DatabaseError(msg);
         }
 
-        Event event{.Id = id, .Timestamp = timePoint, .Type = type};
+        Event event{.Id = id, .Timestamp = timePoint, .Description = description};
 
         events.push_back(event);
     }
@@ -138,7 +142,7 @@ std::vector<Event> Database::GetEventsFromOneDay(std::chrono::system_clock::time
 
 void Database::AssertOpen() const
 {
-    if (!db)
+    if (not IsOpen())
     {
         throw DatabaseError("Database is not open");
     }
@@ -152,7 +156,7 @@ void Database::CreateEventTable()
         CREATE TABLE IF NOT EXISTS events (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             timestamp TEXT NOT NULL,
-            type TEXT NOT NULL
+            description TEXT NOT NULL
         );
     )";
 

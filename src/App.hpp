@@ -12,8 +12,6 @@ public:
     int OnRun() override;
 
 private:
-    std::filesystem::path GetUserDataDir();
-
     std::unique_ptr<Settings> settings;
     std::unique_ptr<Database> database;
 };

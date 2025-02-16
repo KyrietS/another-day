@@ -8,7 +8,7 @@ namespace another_day
 {
 MainWindow::MainWindow(Settings& settings, Database& database)
     : wxFrame(nullptr, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, settings.GetFrameStyle()), settings(settings),
-      database(database)
+      workLog(settings, database)
 {
     this->SetBackgroundColour(*wxWHITE);
 
@@ -75,14 +75,14 @@ MainWindow::MainWindow(Settings& settings, Database& database)
     sessionStartTime = std::chrono::steady_clock::now();
     workStartTime = std::chrono::steady_clock::now() - workdayProgress.Restore();
 
-    database.InsertEvent(events::BEGIN_WORK);
+    workLog.BeginBreak();
 
     UpdateBars();
 }
 
 MainWindow::~MainWindow()
 {
-    database.InsertEvent(events::END);
+    workLog.End();
     SaveProgress();
 }
 
@@ -322,7 +322,7 @@ void MainWindow::OnReveal(const wxCommandEvent& event)
 
 void MainWindow::OnStartBreak(const wxCommandEvent& event)
 {
-    database.InsertEvent(events::BEGIN_BREAK);
+    workLog.BeginBreak();
 
     breakInProgress = true;
     breakStartTime = std::chrono::steady_clock::now();
@@ -335,7 +335,7 @@ void MainWindow::OnStartBreak(const wxCommandEvent& event)
 
 void MainWindow::OnResetSession(const wxCommandEvent& event)
 {
-    database.InsertEvent(events::BEGIN_WORK);
+    workLog.BeginWork();
 
     breakInProgress = false;
     sessionStartTime = std::chrono::steady_clock::now();

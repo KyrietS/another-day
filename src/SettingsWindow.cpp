@@ -12,6 +12,7 @@ SettingsWindow::SettingsWindow(wxWindow* parent, Settings& settings)
 
     wxNotebook* notebook = new wxNotebook(this, wxID_ANY);
 
+    //  ------- General -------
     wxPanel* generalPanel = new wxPanel(notebook, wxID_ANY);
     wxBoxSizer* generalSizer = new wxBoxSizer(wxVERTICAL);
     {
@@ -30,15 +31,22 @@ SettingsWindow::SettingsWindow(wxWindow* parent, Settings& settings)
         autoStartSessionCheckBox->SetToolTip("Start the session automatically when the break ends");
         generalSizer->Add(autoStartSessionCheckBox, 0, wxALL, 5);
 
-        enableHistoryCheckBox = new wxCheckBox(generalPanel, wxID_ANY, "Enable history");
-        enableHistoryCheckBox->SetValidator(wxGenericValidator(&settings.enableHistory));
-        enableHistoryCheckBox->SetToolTip("Save your workday history to a file");
-        enableHistoryCheckBox->Enable(false);
-        generalSizer->Add(enableHistoryCheckBox, 0, wxEXPAND | wxALL, 5);
+        enableWorkLogCheckBox = new wxCheckBox(generalPanel, wxID_ANY, "Enable work log");
+        enableWorkLogCheckBox->SetValidator(wxGenericValidator(&settings.enableWorkLog));
+        enableWorkLogCheckBox->SetToolTip("Enable logging your workday to a file");
+        enableWorkLogCheckBox->Bind(wxEVT_CHECKBOX, [this](wxCommandEvent& e) {
+            if (e.IsChecked() and not this->settings.enableWorkLog)
+            {
+                wxMessageBox("You need to restart the app for this setting to take effect", "Restart required",
+                             wxICON_INFORMATION | wxOK);
+            }
+        });
+        generalSizer->Add(enableWorkLogCheckBox, 0, wxEXPAND | wxALL, 5);
     }
     generalPanel->SetSizerAndFit(generalSizer);
     notebook->AddPage(generalPanel, "General");
 
+    //  ------- Duration -------
     wxPanel* durationPanel = new wxPanel(notebook, wxID_ANY);
     wxBoxSizer* durationSizer = new wxBoxSizer(wxVERTICAL);
     {
@@ -78,6 +86,7 @@ SettingsWindow::SettingsWindow(wxWindow* parent, Settings& settings)
     durationPanel->SetSizerAndFit(durationSizer);
     notebook->AddPage(durationPanel, "Duration");
 
+    //  ------- Notification -------
     wxPanel* notificationPanel = new wxPanel(notebook, wxID_ANY);
     wxBoxSizer* notificationSizer = new wxBoxSizer(wxVERTICAL);
     {

@@ -10,7 +10,7 @@ Settings::Settings(const wxConfigBase& config)
     alwaysOnTop = config.ReadBool("AlwaysOnTop", alwaysOnTop);
     autoStartBreak = config.ReadBool("AutoStartBreak", autoStartBreak);
     autoStartSession = config.ReadBool("AutoStartSession", autoStartSession);
-    enableHistory = config.ReadBool("EnableHistory", enableHistory);
+    enableWorkLog = config.ReadBool("EnableWorkLog", enableWorkLog);
 
     breakDuration = DurationSetting::FromString(config.Read("BreakDuration").ToStdString()).value_or(breakDuration);
     sessionDuration = DurationSetting::FromString(config.Read("SessionDuration").ToStdString()).value_or(sessionDuration);
@@ -19,8 +19,9 @@ Settings::Settings(const wxConfigBase& config)
 
     useAudioNotification = config.ReadBool("UseAudioNotification", useAudioNotification);
     useSystemNotification = config.ReadBool("UseSystemNotification", useSystemNotification);
-
     notificationInterval = DurationSetting::FromString(config.Read("NotificationInterval").ToStdString()).value_or(notificationInterval);
+
+    appDataPath = config.Read("AppDataPath", appDataPath.string()).ToStdString();
     // clang-format on
 }
 
@@ -29,7 +30,7 @@ void Settings::SaveToConfig(wxConfigBase& config)
     config.Write("AlwaysOnTop", alwaysOnTop);
     config.Write("AutoStartBreak", autoStartBreak);
     config.Write("AutoStartSession", autoStartSession);
-    config.Write("EnableHistory", enableHistory);
+    config.Write("EnableWorkLog", enableWorkLog);
     config.Write("BreakDuration", wxString(breakDuration.valueString));
     config.Write("SessionDuration", wxString(sessionDuration.valueString));
     config.Write("WorkDuration", wxString(workDuration.valueString));
@@ -37,6 +38,7 @@ void Settings::SaveToConfig(wxConfigBase& config)
     config.Write("UseAudioNotification", useAudioNotification);
     config.Write("UseSystemNotification", useSystemNotification);
     config.Write("NotificationInterval", wxString(notificationInterval.valueString));
+    config.Write("AppDataPath", wxString(appDataPath.string()));
     config.Flush();
 }
 

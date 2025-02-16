@@ -1,8 +1,8 @@
 #pragma once
 #include "CustomProgressBar.hpp"
-#include "Database.hpp"
 #include "Duration.hpp"
 #include "Settings.hpp"
+#include "WorkLog.hpp"
 #include "WorkdayProgress.hpp"
 #include <chrono>
 #include <optional>
@@ -21,7 +21,7 @@ public:
 
 private:
     Settings& settings;
-    Database& database;
+    WorkLog workLog;
     WorkdayProgress workdayProgress;
 
     bool m_dragging = false;

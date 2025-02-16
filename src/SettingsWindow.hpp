@@ -15,20 +15,19 @@ private:
     Settings& settings;
 
     // General
-    wxCheckBox* alwaysOnTopCheckBox;
-    wxCheckBox* autoStartBreakCheckBox;
-    wxCheckBox* autoStartSessionCheckBox;
-    wxCheckBox* enableHistoryCheckBox;
-    wxTextCtrl* historyPathCtrl;
+    wxCheckBox* alwaysOnTopCheckBox{};
+    wxCheckBox* autoStartBreakCheckBox{};
+    wxCheckBox* autoStartSessionCheckBox{};
+    wxCheckBox* enableWorkLogCheckBox{};
 
     // Duration
-    wxTextCtrl* breakDurationCtrl;
-    wxTextCtrl* sessionDurationCtrl;
-    wxTextCtrl* workDurationCtrl;
-    wxTextCtrl* postponeDurationCtrl;
+    wxTextCtrl* breakDurationCtrl{};
+    wxTextCtrl* sessionDurationCtrl{};
+    wxTextCtrl* workDurationCtrl{};
+    wxTextCtrl* postponeDurationCtrl{};
 
     // Notification
-    wxCheckBox* useAudioNotificationCheckBox;
-    wxCheckBox* useSystemNotificationCheckBox;
+    wxCheckBox* useAudioNotificationCheckBox{};
+    wxCheckBox* useSystemNotificationCheckBox{};
 };
 } // namespace another_day

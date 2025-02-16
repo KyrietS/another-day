@@ -11,19 +11,19 @@ struct sqlite3;
 namespace another_day
 {
 
-namespace events
+namespace events::descriptions
 {
 constexpr std::string_view UNKNOWN = "unknown";
 constexpr std::string_view BEGIN_WORK = "begin work";
 constexpr std::string_view BEGIN_BREAK = "begin break";
 constexpr std::string_view END = "end";
-} // namespace events
+} // namespace events::descriptions
 
 struct Event
 {
     int Id;
     std::chrono::system_clock::time_point Timestamp;
-    std::string Type;
+    std::string Description;
 };
 
 class DatabaseError : public std::runtime_error
@@ -39,13 +39,15 @@ public:
     Database(const std::filesystem::path& path);
     ~Database();
 
+    void Open();
+    bool IsOpen() const noexcept;
+    void Close() noexcept;
+
     // Events
-    void InsertEvent(std::string_view data);
-    void InsertEvent(std::chrono::system_clock::time_point timestamp, std::string_view data);
+    void InsertEvent(std::chrono::system_clock::time_point timestamp, std::string_view description);
     std::vector<Event> GetEventsFromOneDay(std::chrono::system_clock::time_point timestamp);
 
 private:
-    void Close() noexcept;
     void AssertOpen() const;
     void CreateEventTable();
     void CheckDatabaseVersion();
