@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <sqlite3.h>
 #include <sstream>
+#include <utility>
 
 namespace another_day
 {
@@ -23,7 +24,7 @@ std::chrono::system_clock::time_point StringToTimePoint(const std::string& datet
 }
 } // namespace
 
-Database::Database(const std::filesystem::path& path) : path(path)
+Database::Database(std::filesystem::path path) : path(std::move(path))
 {
 }
 
@@ -85,7 +86,7 @@ void Database::InsertEvent(std::chrono::system_clock::time_point timestamp, std:
     std::string ts_str = std::format("{:%Y-%m-%d %H:%M:%S}", zonedTime);
 
     sqlite3_bind_text(stmt, 1, ts_str.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_text(stmt, 2, description.data(), description.size(), SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 2, description.data(), static_cast<int>(description.size()), SQLITE_STATIC);
 
     if (sqlite3_step(stmt) != SQLITE_DONE)
     {
@@ -97,7 +98,7 @@ void Database::InsertEvent(std::chrono::system_clock::time_point timestamp, std:
     sqlite3_finalize(stmt);
 }
 
-std::vector<Event> Database::GetEventsFromOneDay(std::chrono::system_clock::time_point timestamp)
+std::vector<Event> Database::GetEventsFromOneDay(std::chrono::system_clock::time_point date)
 {
     AssertOpen();
 
@@ -114,7 +115,7 @@ std::vector<Event> Database::GetEventsFromOneDay(std::chrono::system_clock::time
         throw DatabaseError(msg);
     }
 
-    auto ymd = std::format("{:%Y-%m-%d}", std::chrono::floor<std::chrono::days>(timestamp));
+    auto ymd = std::format("{:%Y-%m-%d}", std::chrono::floor<std::chrono::days>(date));
     sqlite3_bind_text(stmt, 1, ymd.c_str(), -1, SQLITE_STATIC);
     std::vector<Event> events;
     while (sqlite3_step(stmt) == SQLITE_ROW)

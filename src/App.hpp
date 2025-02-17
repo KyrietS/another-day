@@ -11,6 +11,8 @@ public:
     bool OnInit() override;
     int OnRun() override;
 
+    void CleanUp() override;
+
 private:
     std::unique_ptr<Settings> settings;
     std::unique_ptr<Database> database;

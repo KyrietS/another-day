@@ -19,17 +19,17 @@ public:
     void SetEmptyColor(const wxBrush& brush);
     void SetTextColor(const wxColor& color);
 
-    bool IsFilled();
+    bool IsFilled() const;
 
 private:
-    void OnPaint(wxPaintEvent& event);
+    void CustomOnPaint(wxPaintEvent& event);
 
-    int m_value;
-    int m_range;
-    wxString m_text;
+    int value;
+    int range;
+    wxString text;
 
-    wxBrush m_filledBrush = *wxGREEN_BRUSH;
-    wxBrush m_emptyBrush = *wxLIGHT_GREY_BRUSH;
-    wxColor m_textColor = *wxBLACK;
+    wxBrush filledBrush = *wxGREEN_BRUSH;
+    wxBrush emptyBrush = *wxLIGHT_GREY_BRUSH;
+    wxColor textColor = *wxBLACK;
 };
 } // namespace another_day

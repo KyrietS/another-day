@@ -1,7 +1,6 @@
 #pragma once
 #include <chrono>
 #include <filesystem>
-#include <format>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -36,7 +35,7 @@ class Database
 {
 
 public:
-    Database(const std::filesystem::path& path);
+    Database(std::filesystem::path path);
     ~Database();
 
     void Open();
@@ -45,7 +44,7 @@ public:
 
     // Events
     void InsertEvent(std::chrono::system_clock::time_point timestamp, std::string_view description);
-    std::vector<Event> GetEventsFromOneDay(std::chrono::system_clock::time_point timestamp);
+    std::vector<Event> GetEventsFromOneDay(std::chrono::system_clock::time_point date);
 
 private:
     void AssertOpen() const;

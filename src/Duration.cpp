@@ -1,5 +1,3 @@
-#include "pch.hpp"
-
 #include "Duration.hpp"
 #include <list>
 #include <utility>
@@ -22,7 +20,7 @@ std::list<Token> ReadTokens(const std::string& durationString)
     {
         if (ss >> unit)
         {
-            tokens.push_back({value, unit});
+            tokens.emplace_back(value, unit);
         }
         else
         {

@@ -6,8 +6,7 @@
 
 namespace another_day
 {
-using Duration =
-    std::common_type<std::chrono::seconds, std::common_type<std::chrono::minutes, std::chrono::hours>::type>::type;
+using Duration = std::common_type_t<std::chrono::seconds, std::common_type_t<std::chrono::minutes, std::chrono::hours>>;
 
 struct DurationSyntaxError : std::runtime_error
 {

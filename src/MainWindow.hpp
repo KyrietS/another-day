@@ -10,24 +10,22 @@
 namespace another_day
 {
 constexpr auto FRAME_STYLE = wxSTAY_ON_TOP;
-// constexpr auto FRAME_STYLE = wxFRAME_TOOL_WINDOW | wxSTAY_ON_TOP;
-//  constexpr auto FRAME_STYLE = wxDEFAULT_FRAME_STYLE;
 
 class MainWindow : public wxFrame
 {
 public:
     MainWindow(Settings&, Database&);
-    ~MainWindow();
+    ~MainWindow() override;
 
 private:
     Settings& settings;
     WorkLog workLog;
     WorkdayProgress workdayProgress;
 
-    bool m_dragging = false;
-    wxPoint m_dragStartOffset;
-    CustomProgressBar* m_progressBarSession;
-    CustomProgressBar* m_progressBarWork;
+    bool dragging = false;
+    wxPoint dragStartOffset;
+    CustomProgressBar* progressBarSession;
+    CustomProgressBar* progressBarWork;
     wxStaticBitmap* iconTea;
     wxStaticBitmap* iconDoor;
     std::unique_ptr<wxTimer> timer;
@@ -39,7 +37,7 @@ private:
     std::optional<std::chrono::steady_clock::time_point> lastNotificationTime;
     wxSound notificationSound;
 
-    std::unique_ptr<wxTaskBarIcon> m_taskBarIcon;
+    std::unique_ptr<wxTaskBarIcon> taskBarIcon;
     void CreateTrayIcon();
 
     void UpdateBars();

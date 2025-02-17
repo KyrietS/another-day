@@ -26,7 +26,7 @@ try
     settings = std::make_unique<Settings>(*wxConfig::Get());
     database = std::make_unique<Database>(settings->appDataPath / "data.db");
 
-    MainWindow* window = new MainWindow(*settings, *database);
+    auto* window = new MainWindow(*settings, *database);
     window->Show(true);
     return true;
 }
@@ -47,6 +47,16 @@ int App::OnRun()
         wxLogError("Unhandled exception: \"%s\"", e.what());
         return EXIT_FAILURE;
     }
+}
+
+void App::CleanUp()
+{
+#if defined(_DEBUG) && defined(_MSC_VER)
+    // to prevent the tzdb allocations from being reported as memory leaks
+    std::chrono::get_tzdb_list().~tzdb_list();
+#endif
+
+    wxApp::CleanUp();
 }
 
 } // namespace another_day

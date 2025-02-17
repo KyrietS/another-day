@@ -5,88 +5,88 @@
 namespace another_day
 {
 CustomProgressBar::CustomProgressBar(wxWindow* parent, wxWindowID id, int range, const wxPoint& pos, const wxSize& size)
-    : wxPanel(parent, id, pos, size), m_value(0), m_range(range)
+    : wxPanel(parent, id, pos, size), value(0), range(range)
 {
-    SetBackgroundStyle(wxBG_STYLE_PAINT);
-    Bind(wxEVT_PAINT, &CustomProgressBar::OnPaint, this);
+    wxWindowBase::SetBackgroundStyle(wxBG_STYLE_PAINT);
+    Bind(wxEVT_PAINT, &CustomProgressBar::CustomOnPaint, this);
 }
 
 void CustomProgressBar::SetRange(int range)
 {
-    if (m_range == range)
+    if (range == range)
         return;
 
-    m_range = range;
+    range = range;
     Refresh();
 }
 
 void CustomProgressBar::SetValue(int value)
 {
-    m_value = value;
+    value = value;
     Refresh();
 }
 
 int CustomProgressBar::GetValue() const
 {
-    return m_value;
+    return value;
 }
 
-void CustomProgressBar::SetText(const wxString& text)
+void CustomProgressBar::SetText(const wxString& newText)
 {
-    m_text = text;
+    text = newText;
     Refresh();
 }
 
 wxString CustomProgressBar::GetText() const
 {
-    return m_text;
+    return text;
 }
 
 void CustomProgressBar::SetFilledColor(const wxBrush& brush)
 {
-    m_filledBrush = brush;
+    filledBrush = brush;
     Refresh();
 }
 
 void CustomProgressBar::SetEmptyColor(const wxBrush& brush)
 {
-    m_emptyBrush = brush;
+    emptyBrush = brush;
     Refresh();
 }
 
 void CustomProgressBar::SetTextColor(const wxColor& color)
 {
-    m_textColor = color;
+    textColor = color;
     Refresh();
 }
 
-bool CustomProgressBar::IsFilled()
+bool CustomProgressBar::IsFilled() const
 {
-    return m_value >= m_range;
+    return value >= range;
 }
 
-void CustomProgressBar::OnPaint(wxPaintEvent& event)
+void CustomProgressBar::CustomOnPaint(wxPaintEvent&)
 {
     wxAutoBufferedPaintDC dc(this);
-    dc.SetBackground(m_emptyBrush);
+    dc.SetBackground(emptyBrush);
     dc.Clear();
 
-    wxSize size = GetClientSize();
+    const wxSize size = GetClientSize();
     dc.SetPen(*wxMEDIUM_GREY_PEN);
 
     // Empty progress bar
-    dc.SetBrush(m_emptyBrush);
+    dc.SetBrush(emptyBrush);
     dc.DrawRectangle(0, 0, size.GetWidth(), size.GetHeight());
 
     // Filled progress bar
-    dc.SetBrush(m_filledBrush);
-    int width = (m_value * size.GetWidth()) / std::max(1, m_range);
+    dc.SetBrush(filledBrush);
+    int width = (value * size.GetWidth()) / std::max(1, range);
     width = std::max(0, std::min(size.GetWidth(), width));
     dc.DrawRectangle(0, 0, width, size.GetHeight());
 
     // Text on top of progress bar
-    dc.SetTextForeground(m_textColor);
-    dc.DrawText(m_text, (size.GetWidth() - dc.GetTextExtent(m_text).GetWidth()) / 2,
-                (size.GetHeight() - dc.GetTextExtent(m_text).GetHeight()) / 2);
+    dc.SetTextForeground(textColor);
+    dc.DrawText(text, (size.GetWidth() - dc.GetTextExtent(text).GetWidth()) / 2,
+                (size.GetHeight() - dc.GetTextExtent(text).GetHeight()) / 2);
 }
 } // namespace another_day

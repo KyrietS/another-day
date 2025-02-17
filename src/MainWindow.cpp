@@ -10,7 +10,7 @@ MainWindow::MainWindow(Settings& settings, Database& database)
     : wxFrame(nullptr, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, settings.GetFrameStyle()), settings(settings),
       workLog(settings, database)
 {
-    this->SetBackgroundColour(*wxWHITE);
+    wxWindowBase::SetBackgroundColour(*wxWHITE);
 
     wxImage::AddHandler(new wxPNGHandler());
     wxBitmap iconBitmapTea(wxT("cup-tea.png"), wxBITMAP_TYPE_PNG);
@@ -26,14 +26,14 @@ MainWindow::MainWindow(Settings& settings, Database& database)
     iconTea->SetToolTip("Session time");
     iconDoor->SetToolTip("Working time");
 
-    m_progressBarSession = new CustomProgressBar(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
-    m_progressBarWork = new CustomProgressBar(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
+    progressBarSession = new CustomProgressBar(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
+    progressBarWork = new CustomProgressBar(this, wxID_ANY, 100, wxDefaultPosition, FromDIP(wxSize(85, 20)));
 
     firstRowSizer->Add(iconTea, 0, wxALIGN_CENTER_VERTICAL | wxALL, 0);
-    firstRowSizer->Add(m_progressBarSession, 0, wxALL, 0);
+    firstRowSizer->Add(progressBarSession, 0, wxALL, 0);
 
     secondRowSizer->Add(iconDoor, 0, wxALIGN_CENTER_VERTICAL | wxALL, 0);
-    secondRowSizer->Add(m_progressBarWork, 0, wxALL, 0);
+    secondRowSizer->Add(progressBarWork, 0, wxALL, 0);
 
     mainSizer->Add(firstRowSizer, 0, wxALIGN_LEFT | wxALL, 0);
     mainSizer->AddSpacer(FromDIP(2));
@@ -42,13 +42,13 @@ MainWindow::MainWindow(Settings& settings, Database& database)
     paddingSizer->Add(mainSizer, 1, wxEXPAND | wxALL, FromDIP(2));
 
     this->SetSizer(paddingSizer);
-    this->Layout();
-    this->Fit();
+    this->wxTopLevelWindowBase::Layout();
+    this->wxWindowBase::Fit();
 
     setEvents(iconTea);
     setEvents(iconDoor);
-    setEvents(m_progressBarSession);
-    setEvents(m_progressBarWork);
+    setEvents(progressBarSession);
+    setEvents(progressBarWork);
     setEvents(this);
 
     timer = std::make_unique<wxTimer>(this);
@@ -102,7 +102,7 @@ void MainWindow::OnLeftMouseDown(wxMouseEvent& event)
     const wxPoint windowOnScreenPos = GetPosition();
     int xOffset = mouseOnScreenPos.x - windowOnScreenPos.x;
     int yOffset = mouseOnScreenPos.y - windowOnScreenPos.y;
-    m_dragStartOffset = {xOffset, yOffset};
+    dragStartOffset = {xOffset, yOffset};
 }
 
 void MainWindow::OnLeftMouseUp(wxMouseEvent& event)
@@ -119,7 +119,7 @@ void MainWindow::OnMouseMove(wxMouseEvent& event)
     {
         const wxWindow* win = dynamic_cast<wxWindow*>(event.GetEventObject());
         wxPoint mouseOnScreenPos = win->ClientToScreen(event.GetPosition());
-        Move(mouseOnScreenPos.x - m_dragStartOffset.x, mouseOnScreenPos.y - m_dragStartOffset.y);
+        Move(mouseOnScreenPos.x - dragStartOffset.x, mouseOnScreenPos.y - dragStartOffset.y);
     }
 }
 
@@ -156,14 +156,14 @@ void MainWindow::UpdateBars()
 {
     if (not breakInProgress)
     {
-        SetProgressBarText(m_progressBarSession, sessionStartTime, settings.sessionDuration);
-        SetProgressBarValue(m_progressBarSession, sessionStartTime, settings.sessionDuration);
+        SetProgressBarText(progressBarSession, sessionStartTime, settings.sessionDuration);
+        SetProgressBarValue(progressBarSession, sessionStartTime, settings.sessionDuration);
 
-        if (m_progressBarSession->IsFilled()) // session is over
+        if (progressBarSession->IsFilled()) // session is over
         {
             PlayNotificationSound();
-            m_progressBarSession->SetFilledColor(*wxRED_BRUSH);
-            m_progressBarSession->SetTextColor(*wxWHITE);
+            progressBarSession->SetFilledColor(*wxRED_BRUSH);
+            progressBarSession->SetTextColor(*wxWHITE);
             if (settings.autoStartBreak)
             {
                 OnStartBreak(wxCommandEvent{});
@@ -172,10 +172,10 @@ void MainWindow::UpdateBars()
     }
     else // break in progress
     {
-        SetProgressBarText(m_progressBarSession, breakStartTime, settings.breakDuration);
-        SetProgressBarValue(m_progressBarSession, breakStartTime, settings.breakDuration);
+        SetProgressBarText(progressBarSession, breakStartTime, settings.breakDuration);
+        SetProgressBarValue(progressBarSession, breakStartTime, settings.breakDuration);
 
-        if (m_progressBarSession->IsFilled()) // break is over
+        if (progressBarSession->IsFilled()) // break is over
         {
             PlayNotificationSound();
             if (settings.autoStartSession)
@@ -185,13 +185,13 @@ void MainWindow::UpdateBars()
         }
     }
 
-    SetProgressBarText(m_progressBarWork, workStartTime, settings.workDuration);
-    SetProgressBarValue(m_progressBarWork, workStartTime, settings.workDuration);
+    SetProgressBarText(progressBarWork, workStartTime, settings.workDuration);
+    SetProgressBarValue(progressBarWork, workStartTime, settings.workDuration);
 
-    if (m_progressBarWork->IsFilled())
+    if (progressBarWork->IsFilled())
     {
-        m_progressBarWork->SetFilledColor(*wxRED_BRUSH);
-        m_progressBarWork->SetTextColor(*wxWHITE);
+        progressBarWork->SetFilledColor(*wxRED_BRUSH);
+        progressBarWork->SetTextColor(*wxWHITE);
     }
 }
 
@@ -201,7 +201,8 @@ void MainWindow::PlayNotificationSound()
         std::chrono::steady_clock::now() - lastNotificationTime.value() > settings.notificationInterval.value)
     {
         if (settings.useAudioNotification)
-            notificationSound.Play();
+            if (not notificationSound.Play())
+                wxLogDebug("Failed to play notification sound");
 
         lastNotificationTime = std::chrono::steady_clock::now();
         Show(); // show the window if it's hidden in the tray
@@ -326,8 +327,8 @@ void MainWindow::OnStartBreak(const wxCommandEvent& event)
 
     breakInProgress = true;
     breakStartTime = std::chrono::steady_clock::now();
-    m_progressBarSession->SetFilledColor(wxBrush(wxColor("#00A5FF")));
-    m_progressBarSession->SetTextColor(*wxBLACK);
+    progressBarSession->SetFilledColor(wxBrush(wxColor("#00A5FF")));
+    progressBarSession->SetTextColor(*wxBLACK);
     lastNotificationTime.reset();
 
     UpdateBars();
@@ -339,8 +340,8 @@ void MainWindow::OnResetSession(const wxCommandEvent& event)
 
     breakInProgress = false;
     sessionStartTime = std::chrono::steady_clock::now();
-    m_progressBarSession->SetFilledColor(*wxGREEN_BRUSH);
-    m_progressBarSession->SetTextColor(*wxBLACK);
+    progressBarSession->SetFilledColor(*wxGREEN_BRUSH);
+    progressBarSession->SetTextColor(*wxBLACK);
     lastNotificationTime.reset();
 
     UpdateBars();
@@ -357,20 +358,20 @@ void MainWindow::OnHideToTray(wxCommandEvent& event)
 
 void MainWindow::CreateTrayIcon()
 {
-    m_taskBarIcon = std::make_unique<wxTaskBarIcon>();
+    taskBarIcon = std::make_unique<wxTaskBarIcon>();
     wxIcon icon;
     icon.LoadFile("door-open-out.png", wxBITMAP_TYPE_PNG);
-    m_taskBarIcon->SetIcon(icon, "Another Day");
+    taskBarIcon->SetIcon(icon, "Another Day");
 
-    m_taskBarIcon->Bind(wxEVT_TASKBAR_LEFT_UP, [this](wxTaskBarIconEvent&) { this->OnReveal(wxCommandEvent{}); });
+    taskBarIcon->Bind(wxEVT_TASKBAR_LEFT_UP, [this](wxTaskBarIconEvent&) { this->OnReveal(wxCommandEvent{}); });
 
-    m_taskBarIcon->Bind(wxEVT_TASKBAR_CLICK, [this](wxTaskBarIconEvent&) {
+    taskBarIcon->Bind(wxEVT_TASKBAR_CLICK, [this](wxTaskBarIconEvent&) {
         wxMenu menu;
         menu.SetEventHandler(this);
         menu.Append(ID_REVEAL, "Reveal");
         menu.AppendSeparator();
         menu.Append(wxID_EXIT, "Exit");
-        m_taskBarIcon->PopupMenu(&menu);
+        taskBarIcon->PopupMenu(&menu);
     });
 }
 

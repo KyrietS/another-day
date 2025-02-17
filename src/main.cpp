@@ -2,7 +2,6 @@
 #include "pch.hpp"
 
 #include "App.hpp"
-#include <iostream>
 #include <memory>
 
 #pragma warning(push)
