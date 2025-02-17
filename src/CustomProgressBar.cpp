@@ -11,18 +11,18 @@ CustomProgressBar::CustomProgressBar(wxWindow* parent, wxWindowID id, int range,
     Bind(wxEVT_PAINT, &CustomProgressBar::CustomOnPaint, this);
 }
 
-void CustomProgressBar::SetRange(int range)
+void CustomProgressBar::SetRange(int newRange)
 {
-    if (range == range)
+    if (newRange == range)
         return;
 
-    range = range;
+    range = newRange;
     Refresh();
 }
 
-void CustomProgressBar::SetValue(int value)
+void CustomProgressBar::SetValue(int newValue)
 {
-    value = value;
+    value = newValue;
     Refresh();
 }
 
