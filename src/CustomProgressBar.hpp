@@ -18,6 +18,7 @@ public:
     void SetFilledColor(const wxBrush& brush);
     void SetEmptyColor(const wxBrush& brush);
     void SetTextColor(const wxColor& color);
+    void SetHatched(bool hatched);
 
     bool IsFilled() const;
 
@@ -31,5 +32,6 @@ private:
     wxBrush filledBrush = *wxGREEN_BRUSH;
     wxBrush emptyBrush = *wxLIGHT_GREY_BRUSH;
     wxColor textColor = *wxBLACK;
+    bool isHatched = false;
 };
 } // namespace another_day

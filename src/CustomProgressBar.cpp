@@ -60,6 +60,12 @@ void CustomProgressBar::SetTextColor(const wxColor& color)
     Refresh();
 }
 
+void CustomProgressBar::SetHatched(bool hatched)
+{
+    isHatched = hatched;
+    Refresh();
+}
+
 bool CustomProgressBar::IsFilled() const
 {
     return value >= range;
@@ -83,6 +89,12 @@ void CustomProgressBar::CustomOnPaint(wxPaintEvent&)
     int width = (value * size.GetWidth()) / std::max(1, range);
     width = std::max(0, std::min(size.GetWidth(), width));
     dc.DrawRectangle(0, 0, width, size.GetHeight());
+
+    if (isHatched)
+    {
+        dc.SetBrush(wxBrush(wxColour(120, 120, 120), wxBRUSHSTYLE_BDIAGONAL_HATCH));
+        dc.DrawRectangle(0, 0, size.GetWidth(), size.GetHeight());
+    }
 
     // Text on top of progress bar
     dc.SetTextForeground(textColor);

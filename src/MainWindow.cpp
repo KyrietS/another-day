@@ -57,6 +57,7 @@ MainWindow::MainWindow(Settings& settings, Database& database)
     Bind(wxEVT_MENU, &MainWindow::OnHello, this, wxID_PRINT);
     Bind(wxEVT_MENU, &MainWindow::OnExit, this, wxID_EXIT);
     Bind(wxEVT_MENU, &MainWindow::OnResetSession, this, ID_RESET_SESSION);
+    Bind(wxEVT_MENU, &MainWindow::OnToggleHalt, this, ID_TOGGLE_HALT);
     Bind(wxEVT_MENU, &MainWindow::OnHideToTray, this, ID_HIDE_TO_TRAY);
     Bind(wxEVT_MENU, &MainWindow::OnHide, this, wxID_ICONIZE_FRAME);
     Bind(wxEVT_MENU, &MainWindow::OnStartBreak, this, ID_START_BREAK);
@@ -213,6 +214,8 @@ void MainWindow::SaveProgress(Duration interval) noexcept
 {
     if (workdayProgress.TimeSinceLastSave() < interval)
         return;
+    if (not timer->IsRunning())
+        return;
 
     Duration workdayDuration = std::chrono::duration_cast<Duration>(std::chrono::steady_clock::now() - workStartTime);
     workdayProgress.Save(workdayDuration);
@@ -262,17 +265,23 @@ void MainWindow::OnRightMouseDown(wxMouseEvent& event)
 #ifdef __WINDOWS__
     wxFont font = GetFont();
     font.SetWeight(wxFONTWEIGHT_BOLD);
-    wxMenuItem* item = new wxMenuItem(&contextMenu, ID_START_BREAK, wxT("Start break"));
-    item->SetFont(font);
-    contextMenu.Append(item);
+    wxMenuItem* startBreakItem = new wxMenuItem(&contextMenu, ID_START_BREAK, wxT("Start break"));
+    startBreakItem->SetFont(font);
+    contextMenu.Append(startBreakItem);
 #else
-    contextMenu.Append(ID_START_BREAK, wxT("Start break"));
+    wxMenuItem* startBreakItem = contextMenu.Append(ID_START_BREAK, wxT("Start break"));
 #endif
+    startBreakItem->Enable(timer->IsRunning());
 
-    contextMenu.Append(ID_RESET_SESSION, wxT("Start session"));
+    wxMenuItem* startSessionItem = contextMenu.Append(ID_RESET_SESSION, wxT("Start session"));
+    startSessionItem->Enable(timer->IsRunning());
+
+    contextMenu.Append(ID_TOGGLE_HALT, timer->IsRunning() ? wxT("Halt") : wxT("Resume"));
+
 #ifndef NDEBUG
     AddDebugOptions(contextMenu);
 #endif
+
     contextMenu.AppendSeparator();
     if (wxTaskBarIcon::IsAvailable())
         contextMenu.Append(ID_HIDE_TO_TRAY, wxT("Hide (tray)"));
@@ -345,6 +354,29 @@ void MainWindow::OnResetSession(const wxCommandEvent& event)
     lastNotificationTime.reset();
 
     UpdateBars();
+}
+
+void MainWindow::OnToggleHalt(const wxCommandEvent& event)
+{
+    if (timer->IsRunning())
+    {
+        SaveProgress();
+        haltStartTime = std::chrono::steady_clock::now();
+        timer->Stop();
+        progressBarSession->SetHatched(true);
+        progressBarWork->SetHatched(true);
+    }
+    else if (haltStartTime.has_value())
+    {
+        auto haltDuration = std::chrono::steady_clock::now() - haltStartTime.value();
+        haltStartTime = std::nullopt;
+        workStartTime += haltDuration;
+        sessionStartTime += haltDuration;
+        breakStartTime += haltDuration;
+        progressBarSession->SetHatched(false);
+        progressBarWork->SetHatched(false);
+        timer->Start();
+    }
 }
 
 void MainWindow::OnHideToTray(wxCommandEvent& event)
