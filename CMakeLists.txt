@@ -14,7 +14,7 @@ set(wxBUILD_SHARED OFF)
 FetchContent_Declare(
     wxWidgets
     GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets.git
-    GIT_TAG        v3.2.6
+    GIT_TAG        v3.2.7
     GIT_PROGRESS   TRUE
     GIT_SHALLOW    TRUE
 )
