@@ -42,6 +42,9 @@ private:
     void CreateTrayIcon();
 
     void UpdateBars();
+    void UpdateProgressBarValue(CustomProgressBar*, std::chrono::steady_clock::time_point, Duration);
+    void UpdateProgressBarText(CustomProgressBar*, std::chrono::steady_clock::time_point, Duration);
+
     void PlayNotificationSound();
     void SaveProgress(Duration interval = {}) noexcept;
 
@@ -61,6 +64,8 @@ private:
     void OnResetSession(const wxCommandEvent& event);
     void OnToggleHalt(const wxCommandEvent& event);
     void OnOpenSettings(wxCommandEvent& event);
+
+    std::chrono::steady_clock::time_point Now() const;
 
     // --- DEBUG ---
     void AddDebugOptions(wxMenu&);

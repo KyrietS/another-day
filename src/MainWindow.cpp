@@ -73,8 +73,8 @@ MainWindow::MainWindow(Settings& settings, Database& database)
         wxLogError("Failed to load notification.wav");
     }
 
-    sessionStartTime = std::chrono::steady_clock::now();
-    workStartTime = std::chrono::steady_clock::now() - workdayProgress.Restore();
+    sessionStartTime = Now();
+    workStartTime = Now() - workdayProgress.Restore();
 
     workLog.BeginBreak();
 
@@ -124,18 +124,18 @@ void MainWindow::OnMouseMove(wxMouseEvent& event)
     }
 }
 
-static void SetProgressBarValue(CustomProgressBar* progressBar, std::chrono::steady_clock::time_point startPoint,
-                                Duration duration)
+void MainWindow::UpdateProgressBarValue(CustomProgressBar* progressBar,
+                                        std::chrono::steady_clock::time_point startPoint, Duration duration)
 {
-    auto timePassed = std::chrono::steady_clock::now() - startPoint;
+    auto timePassed = Now() - startPoint;
     progressBar->SetRange(std::chrono::duration_cast<std::chrono::seconds>(duration).count());
     progressBar->SetValue(std::chrono::duration_cast<std::chrono::seconds>(timePassed).count());
 }
 
-void SetProgressBarText(CustomProgressBar* progressBar, std::chrono::steady_clock::time_point startPoint,
-                        Duration duration)
+void MainWindow::UpdateProgressBarText(CustomProgressBar* progressBar, std::chrono::steady_clock::time_point startPoint,
+                                       Duration duration)
 {
-    auto timePassed = std::chrono::steady_clock::now() - startPoint;
+    auto timePassed = Now() - startPoint;
     auto timePassedInSeconds = std::chrono::duration_cast<std::chrono::seconds>(timePassed);
     auto timeLeft = duration - timePassedInSeconds;
     bool isOvertime = timeLeft.count() < 0;
@@ -157,8 +157,8 @@ void MainWindow::UpdateBars()
 {
     if (not breakInProgress)
     {
-        SetProgressBarText(progressBarSession, sessionStartTime, settings.sessionDuration);
-        SetProgressBarValue(progressBarSession, sessionStartTime, settings.sessionDuration);
+        UpdateProgressBarText(progressBarSession, sessionStartTime, settings.sessionDuration);
+        UpdateProgressBarValue(progressBarSession, sessionStartTime, settings.sessionDuration);
 
         if (progressBarSession->IsFilled()) // session is over
         {
@@ -173,8 +173,8 @@ void MainWindow::UpdateBars()
     }
     else // break in progress
     {
-        SetProgressBarText(progressBarSession, breakStartTime, settings.breakDuration);
-        SetProgressBarValue(progressBarSession, breakStartTime, settings.breakDuration);
+        UpdateProgressBarText(progressBarSession, breakStartTime, settings.breakDuration);
+        UpdateProgressBarValue(progressBarSession, breakStartTime, settings.breakDuration);
 
         if (progressBarSession->IsFilled()) // break is over
         {
@@ -186,8 +186,8 @@ void MainWindow::UpdateBars()
         }
     }
 
-    SetProgressBarText(progressBarWork, workStartTime, settings.workDuration);
-    SetProgressBarValue(progressBarWork, workStartTime, settings.workDuration);
+    UpdateProgressBarText(progressBarWork, workStartTime, settings.workDuration);
+    UpdateProgressBarValue(progressBarWork, workStartTime, settings.workDuration);
 
     if (progressBarWork->IsFilled())
     {
@@ -199,13 +199,13 @@ void MainWindow::UpdateBars()
 void MainWindow::PlayNotificationSound()
 {
     if (not lastNotificationTime.has_value() or
-        std::chrono::steady_clock::now() - lastNotificationTime.value() > settings.notificationInterval.value)
+        Now() - lastNotificationTime.value() > settings.notificationInterval.value)
     {
         if (settings.useAudioNotification)
             if (not notificationSound.Play())
                 wxLogDebug("Failed to play notification sound");
 
-        lastNotificationTime = std::chrono::steady_clock::now();
+        lastNotificationTime = Now();
         Show(); // show the window if it's hidden in the tray
     }
 }
@@ -217,8 +217,13 @@ void MainWindow::SaveProgress(Duration interval) noexcept
     if (not timer->IsRunning())
         return;
 
-    Duration workdayDuration = std::chrono::duration_cast<Duration>(std::chrono::steady_clock::now() - workStartTime);
+    Duration workdayDuration = std::chrono::duration_cast<Duration>(Now() - workStartTime);
     workdayProgress.Save(workdayDuration);
+}
+
+std::chrono::steady_clock::time_point MainWindow::Now() const
+{
+    return haltStartTime ? haltStartTime.value() : std::chrono::steady_clock::now();
 }
 
 void MainWindow::OnTimer(wxTimerEvent& event)
@@ -237,22 +242,19 @@ void MainWindow::AddDebugOptions(wxMenu& contextMenu)
 
 void MainWindow::OnDebugFinishSession(wxCommandEvent& event)
 {
-    auto now = std::chrono::steady_clock::now();
-    auto newSessionStart = now - settings.sessionDuration.value + std::chrono::seconds{3};
+    auto newSessionStart = Now() - settings.sessionDuration.value + std::chrono::seconds{3};
     sessionStartTime = newSessionStart;
 }
 
 void MainWindow::OnDebugFinishBreak(wxCommandEvent& event)
 {
-    auto now = std::chrono::steady_clock::now();
-    auto newBreakStart = now - settings.breakDuration.value + std::chrono::seconds{3};
+    auto newBreakStart = Now() - settings.breakDuration.value + std::chrono::seconds{3};
     breakStartTime = newBreakStart;
 }
 
 void MainWindow::OnDebugFinishWork(wxCommandEvent& event)
 {
-    auto now = std::chrono::steady_clock::now();
-    auto newWorkStart = now - settings.workDuration.value + std::chrono::seconds{3};
+    auto newWorkStart = Now() - settings.workDuration.value + std::chrono::seconds{3};
     workStartTime = newWorkStart;
 }
 
@@ -269,13 +271,10 @@ void MainWindow::OnRightMouseDown(wxMouseEvent& event)
     startBreakItem->SetFont(font);
     contextMenu.Append(startBreakItem);
 #else
-    wxMenuItem* startBreakItem = contextMenu.Append(ID_START_BREAK, wxT("Start break"));
+    contextMenu.Append(ID_START_BREAK, wxT("Start break"));
 #endif
-    startBreakItem->Enable(timer->IsRunning());
 
-    wxMenuItem* startSessionItem = contextMenu.Append(ID_RESET_SESSION, wxT("Start session"));
-    startSessionItem->Enable(timer->IsRunning());
-
+    contextMenu.Append(ID_RESET_SESSION, wxT("Start session"));
     contextMenu.Append(ID_TOGGLE_HALT, timer->IsRunning() ? wxT("Halt") : wxT("Resume"));
 
 #ifndef NDEBUG
@@ -335,7 +334,7 @@ void MainWindow::OnStartBreak(const wxCommandEvent& event)
     workLog.BeginBreak();
 
     breakInProgress = true;
-    breakStartTime = std::chrono::steady_clock::now();
+    breakStartTime = Now();
     progressBarSession->SetFilledColor(wxBrush(wxColor("#00A5FF")));
     progressBarSession->SetTextColor(*wxBLACK);
     lastNotificationTime.reset();
@@ -348,7 +347,7 @@ void MainWindow::OnResetSession(const wxCommandEvent& event)
     workLog.BeginWork();
 
     breakInProgress = false;
-    sessionStartTime = std::chrono::steady_clock::now();
+    sessionStartTime = Now();
     progressBarSession->SetFilledColor(*wxGREEN_BRUSH);
     progressBarSession->SetTextColor(*wxBLACK);
     lastNotificationTime.reset();
@@ -365,6 +364,7 @@ void MainWindow::OnToggleHalt(const wxCommandEvent& event)
         timer->Stop();
         progressBarSession->SetHatched(true);
         progressBarWork->SetHatched(true);
+        UpdateBars();
     }
     else if (haltStartTime.has_value())
     {
