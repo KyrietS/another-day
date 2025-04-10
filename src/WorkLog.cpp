@@ -30,6 +30,16 @@ void WorkLog::BeginBreak()
     InsertEvent(events::descriptions::BEGIN_BREAK);
 }
 
+void WorkLog::BeginHalt()
+{
+    InsertEvent(events::descriptions::BEGIN_HALT);
+}
+
+void WorkLog::EndHalt()
+{
+    InsertEvent(events::descriptions::END_HALT);
+}
+
 void WorkLog::End()
 {
     InsertEvent(events::descriptions::END);

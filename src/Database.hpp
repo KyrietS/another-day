@@ -15,6 +15,8 @@ namespace events::descriptions
 constexpr std::string_view UNKNOWN = "unknown";
 constexpr std::string_view BEGIN_WORK = "begin work";
 constexpr std::string_view BEGIN_BREAK = "begin break";
+constexpr std::string_view BEGIN_HALT = "begin halt";
+constexpr std::string_view END_HALT = "end halt";
 constexpr std::string_view END = "end";
 } // namespace events::descriptions
 

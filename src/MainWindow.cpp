@@ -359,6 +359,7 @@ void MainWindow::OnToggleHalt(const wxCommandEvent& event)
 {
     if (timer->IsRunning())
     {
+        workLog.BeginHalt();
         SaveProgress();
         haltStartTime = std::chrono::steady_clock::now();
         timer->Stop();
@@ -368,6 +369,7 @@ void MainWindow::OnToggleHalt(const wxCommandEvent& event)
     }
     else if (haltStartTime.has_value())
     {
+        workLog.EndHalt();
         auto haltDuration = std::chrono::steady_clock::now() - haltStartTime.value();
         haltStartTime = std::nullopt;
         workStartTime += haltDuration;

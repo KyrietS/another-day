@@ -11,6 +11,8 @@ public:
 
     void BeginWork();
     void BeginBreak();
+    void BeginHalt();
+    void EndHalt();
     void End();
 
 private:
