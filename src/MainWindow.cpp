@@ -57,7 +57,7 @@ MainWindow::MainWindow(Settings& settings, Database& database)
     Bind(wxEVT_MENU, &MainWindow::OnHello, this, wxID_PRINT);
     Bind(wxEVT_MENU, &MainWindow::OnExit, this, wxID_EXIT);
     Bind(wxEVT_MENU, &MainWindow::OnResetSession, this, ID_RESET_SESSION);
-    Bind(wxEVT_MENU, &MainWindow::OnToggleHalt, this, ID_TOGGLE_HALT);
+    Bind(wxEVT_MENU, &MainWindow::OnToggleSuspend, this, ID_TOGGLE_SUSPEND);
     Bind(wxEVT_MENU, &MainWindow::OnHideToTray, this, ID_HIDE_TO_TRAY);
     Bind(wxEVT_MENU, &MainWindow::OnHide, this, wxID_ICONIZE_FRAME);
     Bind(wxEVT_MENU, &MainWindow::OnStartBreak, this, ID_START_BREAK);
@@ -223,7 +223,7 @@ void MainWindow::SaveProgress(Duration interval) noexcept
 
 std::chrono::steady_clock::time_point MainWindow::Now() const
 {
-    return haltStartTime ? haltStartTime.value() : std::chrono::steady_clock::now();
+    return suspendStartTime ? suspendStartTime.value() : std::chrono::steady_clock::now();
 }
 
 void MainWindow::OnTimer(wxTimerEvent& event)
@@ -275,7 +275,7 @@ void MainWindow::OnRightMouseDown(wxMouseEvent& event)
 #endif
 
     contextMenu.Append(ID_RESET_SESSION, wxT("Start session"));
-    contextMenu.Append(ID_TOGGLE_HALT, timer->IsRunning() ? wxT("Halt") : wxT("Resume"));
+    contextMenu.Append(ID_TOGGLE_SUSPEND, timer->IsRunning() ? wxT("Suspend") : wxT("Resume"));
 
 #ifndef NDEBUG
     AddDebugOptions(contextMenu);
@@ -355,26 +355,26 @@ void MainWindow::OnResetSession(const wxCommandEvent& event)
     UpdateBars();
 }
 
-void MainWindow::OnToggleHalt(const wxCommandEvent& event)
+void MainWindow::OnToggleSuspend(const wxCommandEvent& event)
 {
     if (timer->IsRunning())
     {
-        workLog.BeginHalt();
+        workLog.BeginSuspend();
         SaveProgress();
-        haltStartTime = std::chrono::steady_clock::now();
+        suspendStartTime = std::chrono::steady_clock::now();
         timer->Stop();
         progressBarSession->SetHatched(true);
         progressBarWork->SetHatched(true);
         UpdateBars();
     }
-    else if (haltStartTime.has_value())
+    else if (suspendStartTime.has_value())
     {
-        workLog.EndHalt();
-        auto haltDuration = std::chrono::steady_clock::now() - haltStartTime.value();
-        haltStartTime = std::nullopt;
-        workStartTime += haltDuration;
-        sessionStartTime += haltDuration;
-        breakStartTime += haltDuration;
+        workLog.EndSuspend();
+        const auto suspendDuration = std::chrono::steady_clock::now() - suspendStartTime.value();
+        suspendStartTime = std::nullopt;
+        workStartTime += suspendDuration;
+        sessionStartTime += suspendDuration;
+        breakStartTime += suspendDuration;
         progressBarSession->SetHatched(false);
         progressBarWork->SetHatched(false);
         timer->Start();

@@ -32,7 +32,7 @@ private:
     std::chrono::steady_clock::time_point breakStartTime;
     std::chrono::steady_clock::time_point sessionStartTime;
     std::chrono::steady_clock::time_point workStartTime;
-    std::optional<std::chrono::steady_clock::time_point> haltStartTime;
+    std::optional<std::chrono::steady_clock::time_point> suspendStartTime;
     bool breakInProgress = false;
 
     std::optional<std::chrono::steady_clock::time_point> lastNotificationTime;
@@ -62,7 +62,7 @@ private:
     void OnReveal(const wxCommandEvent& event);
     void OnStartBreak(const wxCommandEvent& event);
     void OnResetSession(const wxCommandEvent& event);
-    void OnToggleHalt(const wxCommandEvent& event);
+    void OnToggleSuspend(const wxCommandEvent& event);
     void OnOpenSettings(wxCommandEvent& event);
 
     std::chrono::steady_clock::time_point Now() const;
@@ -77,7 +77,7 @@ private:
     {
         ID_RESET_SESSION = wxID_HIGHEST + 1,
         ID_START_BREAK,
-        ID_TOGGLE_HALT,
+        ID_TOGGLE_SUSPEND,
         ID_HIDE_TO_TRAY,
         ID_REVEAL,
 

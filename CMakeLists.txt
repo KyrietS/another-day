@@ -40,10 +40,7 @@ target_link_libraries(${TARGET} PRIVATE wxcore wxbase sqlite3)
 target_precompile_headers(${TARGET} PRIVATE src/pch.hpp)
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/src FILES ${SOURCES})
 
-if (WIN32)
-    target_link_options(${TARGET} PRIVATE "/SUBSYSTEM:WINDOWS")
-endif()
-
 if (MSVC)
+    target_link_options(${TARGET} PRIVATE "/SUBSYSTEM:WINDOWS")
     target_compile_options(${TARGET} PRIVATE /MP)
 endif()
