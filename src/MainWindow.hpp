@@ -65,7 +65,8 @@ private:
     void OnStartBreak(const wxCommandEvent& event);
     void OnResetSession(const wxCommandEvent& event);
     void OnToggleSuspend(const wxCommandEvent& event);
-    void OnOpenSettings(wxCommandEvent& event);
+    void OnEditProgress(const wxCommandEvent& event);
+    void OnOpenSettings(const wxCommandEvent& event);
 
     std::chrono::steady_clock::time_point Now() const;
 
@@ -80,6 +81,7 @@ private:
         ID_RESET_SESSION = wxID_HIGHEST + 1,
         ID_START_BREAK,
         ID_TOGGLE_SUSPEND,
+        ID_EDIT_PROGRESS,
         ID_HIDE_TO_TRAY,
         ID_REVEAL,
 

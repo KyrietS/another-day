@@ -1,6 +1,8 @@
 #include "pch.hpp"
 
 #include "MainWindow.hpp"
+
+#include "EditProgressWindow.hpp"
 #include "SettingsWindow.hpp"
 #include <cassert>
 
@@ -296,6 +298,8 @@ void MainWindow::OnRightMouseDown(wxMouseEvent& event)
 
     contextMenu.Append(ID_RESET_SESSION, wxT("Start session"));
     contextMenu.Append(ID_TOGGLE_SUSPEND, timer->IsRunning() ? wxT("Suspend") : wxT("Resume"));
+    auto editProgress = contextMenu.Append(ID_EDIT_PROGRESS, wxT("Edit progress"));
+    editProgress->Enable(false);
 
 #ifndef NDEBUG
     AddDebugOptions(contextMenu);
@@ -306,10 +310,7 @@ void MainWindow::OnRightMouseDown(wxMouseEvent& event)
         contextMenu.Append(ID_HIDE_TO_TRAY, wxT("Hide (tray)"));
     contextMenu.Append(wxID_ICONIZE_FRAME, wxT("Hide (minimize)"));
     contextMenu.AppendSeparator();
-    {
-        wxMenuItem* settingsItem = contextMenu.Append(wxID_PREFERENCES, wxT("Settings"));
-        settingsItem->Enable(true);
-    }
+    contextMenu.Append(wxID_PREFERENCES, wxT("Settings"));
     contextMenu.AppendSeparator();
     contextMenu.Append(wxID_EXIT, wxT("Exit"));
     PopupMenu(&contextMenu, positionInWindow);
@@ -407,6 +408,15 @@ void MainWindow::OnToggleSuspend(const wxCommandEvent& event)
         timer->Start();
     }
 }
+void MainWindow::OnEditProgress(const wxCommandEvent& event)
+{
+    EditProgressWindow editProgressWindow(this, settings);
+    const int status = editProgressWindow.ShowModal();
+    if (status == wxID_OK)
+    {
+        UpdateBars();
+    }
+}
 
 void MainWindow::OnHideToTray(wxCommandEvent& event)
 {
@@ -436,7 +446,7 @@ void MainWindow::CreateTrayIcon()
     });
 }
 
-void MainWindow::OnOpenSettings(wxCommandEvent& event)
+void MainWindow::OnOpenSettings(const wxCommandEvent&)
 {
     SettingsWindow settingsWindow(this, settings);
     int status = settingsWindow.ShowModal();
