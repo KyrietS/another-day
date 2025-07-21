@@ -220,7 +220,8 @@ void MainWindow::PlayNotificationSound()
 
         lastNotificationTime = Now();
         Show(); // show the window if it's hidden in the tray
-        if (IsIconized()) {
+        if (IsIconized())
+        {
             RequestUserAttention(); // If minimized, flash the icon on the taskbar
         }
     }
@@ -239,14 +240,17 @@ void MainWindow::SaveProgress(Duration interval) noexcept
 void MainWindow::RestoreWindowPosition()
 {
     bool foundDisplay = false;
-    for (unsigned i = 0; i < wxDisplay::GetCount(); ++i) {
+    for (unsigned i = 0; i < wxDisplay::GetCount(); ++i)
+    {
         wxRect displayRect = wxDisplay(i).GetGeometry();
-        if (displayRect.Contains(settings.windowPosition)) {
+        if (displayRect.Contains(settings.windowPosition))
+        {
             foundDisplay = true;
             break;
         }
     }
-    if (not foundDisplay) {
+    if (not foundDisplay)
+    {
         settings.windowPosition = wxDefaultPosition;
     }
     SetPosition(settings.windowPosition);

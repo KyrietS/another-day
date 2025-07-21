@@ -60,14 +60,16 @@ EditProgressWindow::EditProgressWindow(wxWindow* parent, Settings& settings)
 
 void EditProgressWindow::OnAdd(wxCommandEvent& event)
 {
-    if (not Validate() or not TransferDataFromWindow()) return;
+    if (not Validate() or not TransferDataFromWindow())
+        return;
     DurationEvent evt(EVT_ADD_WORK_TIME, durationValue.value);
     wxPostEvent(GetParent(), evt);
 }
 
 void EditProgressWindow::OnSubtract(wxCommandEvent& event)
 {
-    if (not Validate() or not TransferDataFromWindow()) return;
+    if (not Validate() or not TransferDataFromWindow())
+        return;
     DurationEvent evt(EVT_SUBTRACT_WORK_TIME, durationValue.value);
     wxPostEvent(GetParent(), evt);
 }
@@ -80,7 +82,6 @@ void EditProgressWindow::OnReset(wxCommandEvent& event)
         ResetDayProgress();
     }
 }
-
 
 void EditProgressWindow::ResetDayProgress()
 {

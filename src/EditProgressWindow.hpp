@@ -1,17 +1,22 @@
 #pragma once
-#include "Settings.hpp"
 #include "Duration.hpp"
-
+#include "Settings.hpp"
 
 namespace another_day
 {
-class DurationEvent : public wxCommandEvent {
+class DurationEvent : public wxCommandEvent
+{
 public:
-    DurationEvent(wxEventType eventType, Duration duration)
-        : wxCommandEvent(eventType), duration(duration) {}
-    DurationEvent(const DurationEvent& other)
-        : wxCommandEvent(other), duration(other.duration) {}
-    virtual wxEvent* Clone() const override { return new DurationEvent(*this); }
+    DurationEvent(wxEventType eventType, Duration duration) : wxCommandEvent(eventType), duration(duration)
+    {
+    }
+    DurationEvent(const DurationEvent& other) : wxCommandEvent(other), duration(other.duration)
+    {
+    }
+    virtual wxEvent* Clone() const override
+    {
+        return new DurationEvent(*this);
+    }
     Duration duration;
 };
 
@@ -39,4 +44,4 @@ private:
 
     void ResetDayProgress();
 };
-}
+} // namespace another_day
