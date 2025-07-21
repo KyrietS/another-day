@@ -72,6 +72,8 @@ MainWindow::MainWindow(Settings& settings, Database& database)
     Bind(wxEVT_MENU, &MainWindow::OnDebugFinishBreak, this, ID_DEBUG_FINISH_BREAK);
     Bind(wxEVT_MENU, &MainWindow::OnDebugFinishWork, this, ID_DEBUG_FINISH_WORK);
     Bind(EVT_RESET_DAY_PROGRESS, &MainWindow::OnResetDayProgress, this);
+    Bind(EVT_ADD_WORK_TIME, &MainWindow::OnAddWorkTime, this);
+    Bind(EVT_SUBTRACT_WORK_TIME, &MainWindow::OnSubtractWorkTime, this);
 
     if (not notificationSound.Create(wxT("notification.wav")))
     {
@@ -199,6 +201,11 @@ void MainWindow::UpdateBars()
     {
         progressBarWork->SetFilledColor(*wxRED_BRUSH);
         progressBarWork->SetTextColor(*wxWHITE);
+    }
+    else
+    {
+        progressBarWork->SetFilledColor(*wxGREEN_BRUSH);
+        progressBarWork->SetTextColor(*wxBLACK);
     }
 }
 
@@ -413,11 +420,7 @@ void MainWindow::OnToggleSuspend(const wxCommandEvent& event)
 void MainWindow::OnEditProgress(const wxCommandEvent& event)
 {
     EditProgressWindow editProgressWindow(this, settings);
-    const int status = editProgressWindow.ShowModal();
-    if (status == wxID_OK)
-    {
-        UpdateBars();
-    }
+    editProgressWindow.ShowModal();
 }
 
 void MainWindow::OnResetDayProgress(wxCommandEvent& event)
@@ -471,6 +474,20 @@ void MainWindow::OnOpenSettings(const wxCommandEvent&)
         UpdateBars();
         SetWindowStyle(settings.GetFrameStyle());
     }
+}
+
+void MainWindow::OnAddWorkTime(const DurationEvent& event)
+{
+    workStartTime -= event.duration;
+    UpdateBars();
+    SaveProgress();
+}
+
+void MainWindow::OnSubtractWorkTime(const DurationEvent& event)
+{
+    workStartTime += event.duration;
+    UpdateBars();
+    SaveProgress();
 }
 
 } // namespace another_day

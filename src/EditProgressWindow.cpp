@@ -1,7 +1,10 @@
 #include "EditProgressWindow.hpp"
+#include "DurationValidator.hpp"
 
 namespace another_day
 {
+wxDEFINE_EVENT(EVT_ADD_WORK_TIME, DurationEvent);
+wxDEFINE_EVENT(EVT_SUBTRACT_WORK_TIME, DurationEvent);
 wxDEFINE_EVENT(EVT_RESET_DAY_PROGRESS, wxCommandEvent);
 
 EditProgressWindow::EditProgressWindow(wxWindow* parent, Settings& settings)
@@ -17,6 +20,7 @@ EditProgressWindow::EditProgressWindow(wxWindow* parent, Settings& settings)
         durationSizer->Add(new wxStaticText(this, wxID_ANY, "Duration:"), 0, wxALIGN_CENTER_VERTICAL | wxRIGHT, 5);
 
         durationCtrl = new wxTextCtrl(this, wxID_ANY);
+        durationCtrl->SetValidator(DurationValidator(durationValue));
         durationCtrl->SetToolTip("Enter duration to add/subtract (units: s, m, h)");
         durationSizer->Add(durationCtrl, 1, wxEXPAND);
 
@@ -41,9 +45,9 @@ EditProgressWindow::EditProgressWindow(wxWindow* parent, Settings& settings)
 
         // OK/Cancel buttons
         wxBoxSizer* okCancelSizer = new wxBoxSizer(wxHORIZONTAL);
-        auto okButton = new wxButton(this, wxID_OK, "Close");
-        okButton->SetDefault();
-        okCancelSizer->Add(okButton, 0, wxALL, 5);
+        auto closeButton = new wxButton(this, wxID_CANCEL, "Close");
+        closeButton->SetDefault();
+        okCancelSizer->Add(closeButton, 0, wxALL, 5);
         mainSizer->Add(okCancelSizer, 0, wxALIGN_RIGHT | wxALL, 5);
     }
 
@@ -56,20 +60,16 @@ EditProgressWindow::EditProgressWindow(wxWindow* parent, Settings& settings)
 
 void EditProgressWindow::OnAdd(wxCommandEvent& event)
 {
-    if (wxMessageBox("This will add the duration to the current progress.\nAre you sure?", "Confirm Add",
-                     wxICON_QUESTION | wxYES_NO) == wxYES)
-    {
-        ApplyProgressChange(+1);
-    }
+    if (not Validate() or not TransferDataFromWindow()) return;
+    DurationEvent evt(EVT_ADD_WORK_TIME, durationValue.value);
+    wxPostEvent(GetParent(), evt);
 }
 
 void EditProgressWindow::OnSubtract(wxCommandEvent& event)
 {
-    if (wxMessageBox("This will subtract the duration from the current progress.\nAre you sure?", "Confirm Subtract",
-                     wxICON_QUESTION | wxYES_NO) == wxYES)
-    {
-        ApplyProgressChange(-1);
-    }
+    if (not Validate() or not TransferDataFromWindow()) return;
+    DurationEvent evt(EVT_SUBTRACT_WORK_TIME, durationValue.value);
+    wxPostEvent(GetParent(), evt);
 }
 
 void EditProgressWindow::OnReset(wxCommandEvent& event)
@@ -81,10 +81,6 @@ void EditProgressWindow::OnReset(wxCommandEvent& event)
     }
 }
 
-void EditProgressWindow::ApplyProgressChange(int sign)
-{
-    // TODO: Implement logic to add/subtract duration from current progress
-}
 
 void EditProgressWindow::ResetDayProgress()
 {

@@ -1,6 +1,7 @@
 #pragma once
 #include "CustomProgressBar.hpp"
 #include "Duration.hpp"
+#include "EditProgressWindow.hpp"
 #include "Settings.hpp"
 #include "WorkLog.hpp"
 #include "WorkdayProgress.hpp"
@@ -68,6 +69,8 @@ private:
     void OnEditProgress(const wxCommandEvent& event);
     void OnOpenSettings(const wxCommandEvent& event);
     void OnResetDayProgress(wxCommandEvent& event);
+    void OnAddWorkTime(const DurationEvent& event);
+    void OnSubtractWorkTime(const DurationEvent& event);
 
     std::chrono::steady_clock::time_point Now() const;
 

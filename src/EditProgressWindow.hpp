@@ -1,9 +1,22 @@
 #pragma once
 #include "Settings.hpp"
+#include "Duration.hpp"
 
 
 namespace another_day
 {
+class DurationEvent : public wxCommandEvent {
+public:
+    DurationEvent(wxEventType eventType, Duration duration)
+        : wxCommandEvent(eventType), duration(duration) {}
+    DurationEvent(const DurationEvent& other)
+        : wxCommandEvent(other), duration(other.duration) {}
+    virtual wxEvent* Clone() const override { return new DurationEvent(*this); }
+    Duration duration;
+};
+
+wxDECLARE_EVENT(EVT_ADD_WORK_TIME, DurationEvent);
+wxDECLARE_EVENT(EVT_SUBTRACT_WORK_TIME, DurationEvent);
 wxDECLARE_EVENT(EVT_RESET_DAY_PROGRESS, wxCommandEvent);
 
 class EditProgressWindow : public wxDialog
@@ -13,6 +26,7 @@ public:
 
 private:
     Settings& settings;
+    DurationSetting durationValue{};
 
     wxTextCtrl* durationCtrl{};
     wxButton* addButton{};
@@ -23,7 +37,6 @@ private:
     void OnSubtract(wxCommandEvent& event);
     void OnReset(wxCommandEvent& event);
 
-    void ApplyProgressChange(int sign); // sign: +1 for add, -1 for subtract
     void ResetDayProgress();
 };
 }
