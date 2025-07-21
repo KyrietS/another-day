@@ -61,6 +61,7 @@ MainWindow::MainWindow(Settings& settings, Database& database)
     Bind(wxEVT_MENU, &MainWindow::OnExit, this, wxID_EXIT);
     Bind(wxEVT_MENU, &MainWindow::OnResetSession, this, ID_RESET_SESSION);
     Bind(wxEVT_MENU, &MainWindow::OnToggleSuspend, this, ID_TOGGLE_SUSPEND);
+    Bind(wxEVT_MENU, &MainWindow::OnEditProgress, this, ID_EDIT_PROGRESS);
     Bind(wxEVT_MENU, &MainWindow::OnHideToTray, this, ID_HIDE_TO_TRAY);
     Bind(wxEVT_MENU, &MainWindow::OnHide, this, wxID_ICONIZE_FRAME);
     Bind(wxEVT_MENU, &MainWindow::OnStartBreak, this, ID_START_BREAK);
@@ -299,7 +300,7 @@ void MainWindow::OnRightMouseDown(wxMouseEvent& event)
     contextMenu.Append(ID_RESET_SESSION, wxT("Start session"));
     contextMenu.Append(ID_TOGGLE_SUSPEND, timer->IsRunning() ? wxT("Suspend") : wxT("Resume"));
     auto editProgress = contextMenu.Append(ID_EDIT_PROGRESS, wxT("Edit progress"));
-    editProgress->Enable(false);
+    editProgress->Enable(true);
 
 #ifndef NDEBUG
     AddDebugOptions(contextMenu);
