@@ -22,6 +22,7 @@ FetchContent_Declare(
     sqlite3
     URL https://www.sqlite.org/2025/sqlite-amalgamation-3490000.zip
     URL_HASH SHA256=cb6851ebad74913672014c20f642bbd7883552c4747780583a54ee1cd493f13b
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 
 FetchContent_MakeAvailable(wxWidgets sqlite3)
