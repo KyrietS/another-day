@@ -10,6 +10,7 @@ MainWindow::MainWindow(Settings& settings, Database& database)
     : wxFrame(nullptr, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, settings.GetFrameStyle()), settings(settings),
       workLog(settings, database)
 {
+    RestoreWindowPosition();
     wxWindowBase::SetBackgroundColour(*wxWHITE);
 
     wxImage::AddHandler(new wxPNGHandler());
@@ -93,6 +94,7 @@ void MainWindow::setEvents(wxEvtHandler* handler)
     handler->Bind(wxEVT_LEFT_UP, &MainWindow::OnLeftMouseUp, this);
     handler->Bind(wxEVT_MOTION, &MainWindow::OnMouseMove, this);
     handler->Bind(wxEVT_RIGHT_DOWN, &MainWindow::OnRightMouseDown, this);
+    handler->Bind(wxEVT_MOVE, &MainWindow::OnWindowMove, this);
 }
 
 void MainWindow::OnLeftMouseDown(wxMouseEvent& event)
@@ -220,6 +222,21 @@ void MainWindow::SaveProgress(Duration interval) noexcept
     Duration workdayDuration = std::chrono::duration_cast<Duration>(Now() - workStartTime);
     workdayProgress.Save(workdayDuration);
 }
+void MainWindow::RestoreWindowPosition()
+{
+    bool foundDisplay = false;
+    for (unsigned i = 0; i < wxDisplay::GetCount(); ++i) {
+        wxRect displayRect = wxDisplay(i).GetGeometry();
+        if (displayRect.Contains(settings.windowPosition)) {
+            foundDisplay = true;
+            break;
+        }
+    }
+    if (not foundDisplay) {
+        settings.windowPosition = wxDefaultPosition;
+    }
+    SetPosition(settings.windowPosition);
+}
 
 std::chrono::steady_clock::time_point MainWindow::Now() const
 {
@@ -293,6 +310,13 @@ void MainWindow::OnRightMouseDown(wxMouseEvent& event)
     contextMenu.AppendSeparator();
     contextMenu.Append(wxID_EXIT, wxT("Exit"));
     PopupMenu(&contextMenu, positionInWindow);
+}
+
+void MainWindow::OnWindowMove(wxMoveEvent& event)
+{
+    settings.windowPosition = event.GetPosition();
+    settings.SaveToConfig(*wxConfig::Get());
+    event.Skip();
 }
 
 void MainWindow::OnHello(wxCommandEvent& event)

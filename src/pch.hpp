@@ -9,6 +9,7 @@
 #include <wx/taskbar.h>
 #include <wx/valgen.h>
 #include <wx/wxprec.h>
+#include <wx/display.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>

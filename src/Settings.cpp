@@ -12,6 +12,9 @@ Settings::Settings(const wxConfigBase& config)
     autoStartSession = config.ReadBool("AutoStartSession", autoStartSession);
     enableWorkLog = config.ReadBool("EnableWorkLog", enableWorkLog);
 
+    windowPosition.x = config.ReadLong("WindowPositionX", windowPosition.x);
+    windowPosition.y = config.ReadLong("WindowPositionY", windowPosition.y);
+
     breakDuration = DurationSetting::FromString(config.Read("BreakDuration").ToStdString()).value_or(breakDuration);
     sessionDuration = DurationSetting::FromString(config.Read("SessionDuration").ToStdString()).value_or(sessionDuration);
     workDuration = DurationSetting::FromString(config.Read("WorkDuration").ToStdString()).value_or(workDuration);
@@ -39,6 +42,8 @@ void Settings::SaveToConfig(wxConfigBase& config)
     config.Write("UseSystemNotification", useSystemNotification);
     config.Write("NotificationInterval", wxString(notificationInterval.valueString));
     config.Write("AppDataPath", wxString(appDataPath.string()));
+    config.Write("WindowPositionX", windowPosition.x);
+    config.Write("WindowPositionY", windowPosition.y);
     config.Flush();
 }
 

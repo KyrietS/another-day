@@ -31,6 +31,9 @@ struct Settings
     bool useSystemNotification = false;
     DurationSetting notificationInterval = std::chrono::seconds{60};
 
+    // Window settings
+    wxPoint windowPosition = wxDefaultPosition;
+
     // Hidden
     std::filesystem::path appDataPath = paths::GetAppDataPath();
 };

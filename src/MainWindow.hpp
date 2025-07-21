@@ -47,6 +47,7 @@ private:
 
     void PlayNotificationSound();
     void SaveProgress(Duration interval = {}) noexcept;
+    void RestoreWindowPosition();
 
     void setEvents(wxEvtHandler* handler);
     void OnLeftMouseDown(wxMouseEvent& event);
@@ -54,6 +55,7 @@ private:
     void OnMouseMove(wxMouseEvent& event);
     void OnTimer(wxTimerEvent& event);
     void OnRightMouseDown(wxMouseEvent& event);
+    void OnWindowMove(wxMoveEvent& event);
     void OnHello(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
     void OnClose(wxCloseEvent& event);
