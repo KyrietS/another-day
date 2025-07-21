@@ -209,6 +209,9 @@ void MainWindow::PlayNotificationSound()
 
         lastNotificationTime = Now();
         Show(); // show the window if it's hidden in the tray
+        if (IsIconized()) {
+            RequestUserAttention(); // If minimized, flash the icon on the taskbar
+        }
     }
 }
 
