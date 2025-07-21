@@ -18,6 +18,7 @@ constexpr std::string_view BEGIN_BREAK = "begin break";
 constexpr std::string_view BEGIN_SUSPEND = "begin suspend";
 constexpr std::string_view END_SUSPEND = "end suspend";
 constexpr std::string_view END = "end";
+constexpr std::string_view MANUAL_EDIT = "manual edit";
 } // namespace events::descriptions
 
 struct Event

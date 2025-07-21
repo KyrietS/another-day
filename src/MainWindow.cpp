@@ -71,6 +71,7 @@ MainWindow::MainWindow(Settings& settings, Database& database)
     Bind(wxEVT_MENU, &MainWindow::OnDebugFinishSession, this, ID_DEBUG_FINISH_SESSION);
     Bind(wxEVT_MENU, &MainWindow::OnDebugFinishBreak, this, ID_DEBUG_FINISH_BREAK);
     Bind(wxEVT_MENU, &MainWindow::OnDebugFinishWork, this, ID_DEBUG_FINISH_WORK);
+    Bind(EVT_RESET_DAY_PROGRESS, &MainWindow::OnResetDayProgress, this);
 
     if (not notificationSound.Create(wxT("notification.wav")))
     {
@@ -80,7 +81,7 @@ MainWindow::MainWindow(Settings& settings, Database& database)
     sessionStartTime = Now();
     workStartTime = Now() - workdayProgress.Restore();
 
-    workLog.BeginBreak();
+    workLog.BeginWork();
 
     UpdateBars();
 }
@@ -417,6 +418,20 @@ void MainWindow::OnEditProgress(const wxCommandEvent& event)
     {
         UpdateBars();
     }
+}
+
+void MainWindow::OnResetDayProgress(wxCommandEvent& event)
+{
+    if (suspendStartTime)
+    {
+        OnToggleSuspend(event);
+    }
+    workStartTime = Now();
+    sessionStartTime = Now();
+    breakInProgress = false;
+    workLog.ManualEdit();
+    UpdateBars();
+    SaveProgress();
 }
 
 void MainWindow::OnHideToTray(wxCommandEvent& event)

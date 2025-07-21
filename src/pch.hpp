@@ -10,6 +10,7 @@
 #include <wx/valgen.h>
 #include <wx/wxprec.h>
 #include <wx/display.h>
+#include <wx/event.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>

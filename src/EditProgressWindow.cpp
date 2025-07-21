@@ -2,6 +2,8 @@
 
 namespace another_day
 {
+wxDEFINE_EVENT(EVT_RESET_DAY_PROGRESS, wxCommandEvent);
+
 EditProgressWindow::EditProgressWindow(wxWindow* parent, Settings& settings)
     : wxDialog(parent, wxID_ANY, "Edit Progress", wxDefaultPosition, wxDefaultSize), settings(settings)
 {
@@ -86,7 +88,8 @@ void EditProgressWindow::ApplyProgressChange(int sign)
 
 void EditProgressWindow::ResetDayProgress()
 {
-    // TODO: Implement logic to reset the day's progress to 0h
+    wxCommandEvent evt(EVT_RESET_DAY_PROGRESS);
+    wxPostEvent(GetParent(), evt);
 }
 
 } // namespace another_day

@@ -1,8 +1,11 @@
 #pragma once
 #include "Settings.hpp"
 
+
 namespace another_day
 {
+wxDECLARE_EVENT(EVT_RESET_DAY_PROGRESS, wxCommandEvent);
+
 class EditProgressWindow : public wxDialog
 {
 public:

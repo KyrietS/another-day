@@ -14,6 +14,7 @@ public:
     void BeginSuspend();
     void EndSuspend();
     void End();
+    void ManualEdit();
 
 private:
     void InsertEvent(std::string_view description);

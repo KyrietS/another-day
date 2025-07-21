@@ -67,6 +67,7 @@ private:
     void OnToggleSuspend(const wxCommandEvent& event);
     void OnEditProgress(const wxCommandEvent& event);
     void OnOpenSettings(const wxCommandEvent& event);
+    void OnResetDayProgress(wxCommandEvent& event);
 
     std::chrono::steady_clock::time_point Now() const;
 

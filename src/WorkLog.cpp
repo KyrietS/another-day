@@ -44,6 +44,10 @@ void WorkLog::End()
 {
     InsertEvent(events::descriptions::END);
 }
+void WorkLog::ManualEdit()
+{
+    InsertEvent(events::descriptions::MANUAL_EDIT);
+}
 
 void WorkLog::InsertEvent(std::string_view description)
 {
