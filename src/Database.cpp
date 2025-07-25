@@ -2,6 +2,7 @@
 
 #include "Database.hpp"
 #include <ctime>
+#include <format>
 #include <iomanip>
 #include <sqlite3.h>
 #include <sstream>

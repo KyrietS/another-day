@@ -1,6 +1,5 @@
-#include "pch.hpp"
-
 #include "WorkdayProgress.hpp"
+#include <format>
 
 namespace another_day
 {
